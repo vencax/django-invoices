@@ -1,0 +1,86 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR vencax77@gmail.com, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-05-30 09:57+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2\n"
+
+#: admin.py:12
+msgid "TotalPrice"
+msgstr "Celková cena"
+
+#: models.py:15
+msgid "bankaccount"
+msgstr "Číslo bankovního účtu"
+
+#: models.py:16
+msgid "inum"
+msgstr "IČO"
+
+#: models.py:17
+msgid "tinum"
+msgstr "DIČ"
+
+#: models.py:25
+msgid "inInvoice"
+msgstr "Příchozí faktura"
+
+#: models.py:26
+msgid "outInvoice"
+msgstr "Odchozí faktura"
+
+#: models.py:30
+msgid "partner"
+msgstr "Partner"
+
+#: models.py:32 models.py:82
+msgid "typee"
+msgstr "typ faktury"
+
+#: models.py:34
+msgid "paid"
+msgstr "zaplacena"
+
+#: models.py:51
+msgid "CZKName"
+msgstr "česká koruna"
+
+#: models.py:58 models.py:80
+msgid "name"
+msgstr "název položky"
+
+#: models.py:59
+msgid "count"
+msgstr "počet"
+
+#: models.py:60
+msgid "price"
+msgstr "cena za jednotku"
+
+#: models.py:62
+msgid "currency"
+msgstr "měna"
+
+#: models.py:74
+msgid "underPaid"
+msgstr "nedoplaceno"
+
+#: models.py:75
+msgid "overPaid"
+msgstr "přeplaceno"
+
+#: models.py:76
+msgid "unassigned"
+msgstr "nespárováno"
