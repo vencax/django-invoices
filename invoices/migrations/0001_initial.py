@@ -22,8 +22,7 @@ class Migration(SchemaMigration):
         db.create_table('invoices_invoice', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('issueDate', self.gf('django.db.models.fields.DateField')(auto_now_add=True, blank=True)),
-            ('subscriber', self.gf('django.db.models.fields.related.ForeignKey')(related_name='invoices', to=orm['auth.User'])),
-            ('contractor', self.gf('django.db.models.fields.related.ForeignKey')(related_name='givenInvoices', to=orm['auth.User'])),
+            ('partner', self.gf('django.db.models.fields.related.ForeignKey')(related_name='invoices', to=orm['auth.User'])),
             ('typee', self.gf('django.db.models.fields.CharField')(max_length=1)),
             ('paid', self.gf('django.db.models.fields.BooleanField')(default=False)),
         ))
@@ -118,11 +117,10 @@ class Migration(SchemaMigration):
         },
         'invoices.invoice': {
             'Meta': {'object_name': 'Invoice'},
-            'contractor': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'givenInvoices'", 'to': "orm['auth.User']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'issueDate': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'paid': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'subscriber': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'invoices'", 'to': "orm['auth.User']"}),
+            'partner': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'invoices'", 'to': "orm['auth.User']"}),
             'typee': ('django.db.models.fields.CharField', [], {'max_length': '1'})
         },
         'invoices.item': {

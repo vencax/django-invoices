@@ -2,6 +2,10 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
+from django.db.models.signals import post_save
+
+from .signals import invoice_saved
+
 
 class CompanyInfo(models.Model):
     """
@@ -23,9 +27,8 @@ class Invoice(models.Model):
     ]
 
     issueDate = models.DateField(editable=False, auto_now_add=True)
-    subscriber = models.ForeignKey(User, related_name='invoices')
-    contractor = models.ForeignKey(User, related_name='givenInvoices',
-                                   editable=False)
+    partner = models.ForeignKey(User, verbose_name=_('partner'),
+                                related_name='invoices')
     typee = models.CharField(max_length=1, verbose_name=_('typee'),
                              choices=typeChoices)
     paid = models.BooleanField(verbose_name=_('paid'),
@@ -35,17 +38,14 @@ class Invoice(models.Model):
     def get_absolute_url(self):
         return ('invoice_detail', (self.id,))
 
-    def save(self, *args, **kwargs):
-        self.paid = getattr(self, 'paid', None) or False
-        self.contractor = getattr(self, 'contractor', None) or \
-                          User.objects.get(username='mycompany')
-        super(Invoice, self).save(*args, **kwargs)
-
     def totalPrice(self):
         total = 0
         for i in self.item_set.all():
             total += (i.price * i.count)
         return total
+    
+post_save.connect(invoice_saved, sender=Invoice, dispatch_uid='invoice_save')
+
 
 currencyChoices = [
   ('CZK', _('CZKName')),
