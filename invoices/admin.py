@@ -1,7 +1,8 @@
 from django.contrib import admin
-from models import Item, Invoice, BadIncommingTransfer
+from models import Item, Invoice, BadIncommingTransfer, CompanyInfo
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.admin import UserAdmin
 
 class ItemsInline(admin.TabularInline):
     model = Item
@@ -24,3 +25,10 @@ class BadIncommingTransferAdmin(admin.ModelAdmin):
 
 admin.site.register(Invoice, InvoiceAdmin)
 admin.site.register(BadIncommingTransfer, BadIncommingTransferAdmin)
+
+class CompanyInfoInline(admin.StackedInline):
+    model = CompanyInfo
+    extra = 1
+    
+UserAdmin.inlines.append(CompanyInfoInline)
+    
