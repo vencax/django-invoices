@@ -1,0 +1,18 @@
+
+{% load i18n %}
+
+{% trans 'Hi, we are sending you an invoice with following contents' %}:
+
+{% trans 'Number' %}:{{ invoice.id }}
+{% trans 'issueDate' %}:{{ invoice.issueDate }}
+{% trans 'variable symbol' %}:{{ invoice.id }}
+{% trans 'constant symbol' %}:{{ invoice.issueDate|date:"mY" }}
+{% trans 'amount' %}:{{ invoice.totalPrice }}
+{% trans 'items' %}:
+{% for i in invoice.items.all %}
+{{ i }}
+{% endfor %} 
+
+{% blocktrans %}Yours sincerely, {{ name }} team.{% endblocktrans %} 
+
+{% if extraContent %}{{ extraContent }}{% endif %}

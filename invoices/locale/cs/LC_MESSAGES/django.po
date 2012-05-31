@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-30 09:57+0200\n"
+"POT-Creation-Date: 2012-05-31 09:11+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,66 +21,115 @@ msgstr ""
 msgid "TotalPrice"
 msgstr "Celková cena"
 
-#: models.py:15
+#: models.py:17
 msgid "bankaccount"
 msgstr "Číslo bankovního účtu"
 
-#: models.py:16
+#: models.py:18
 msgid "inum"
 msgstr "IČO"
 
-#: models.py:17
+#: models.py:19
 msgid "tinum"
 msgstr "DIČ"
 
-#: models.py:25
+#: models.py:20
+msgid "state"
+msgstr "Stát"
+
+#: models.py:22
+msgid "town"
+msgstr "Město"
+
+#: models.py:23
+msgid "address"
+msgstr "Adresa"
+
+#: models.py:24
+msgid "phone"
+msgstr "Telefon"
+
+#: models.py:34
 msgid "inInvoice"
 msgstr "Příchozí faktura"
 
-#: models.py:26
+#: models.py:35
 msgid "outInvoice"
 msgstr "Odchozí faktura"
 
-#: models.py:30
+#: models.py:39
 msgid "partner"
 msgstr "Partner"
 
-#: models.py:32 models.py:82
+#: models.py:41 models.py:101
 msgid "typee"
 msgstr "typ faktury"
 
-#: models.py:34
+#: models.py:43
 msgid "paid"
 msgstr "zaplacena"
 
-#: models.py:51
+#: models.py:69
 msgid "CZKName"
 msgstr "česká koruna"
 
-#: models.py:58 models.py:80
+#: models.py:76 models.py:99
 msgid "name"
 msgstr "název položky"
 
-#: models.py:59
+#: models.py:77
 msgid "count"
 msgstr "počet"
 
-#: models.py:60
+#: models.py:78
 msgid "price"
 msgstr "cena za jednotku"
 
-#: models.py:62
+#: models.py:80
 msgid "currency"
 msgstr "měna"
 
-#: models.py:74
+#: models.py:93
 msgid "underPaid"
 msgstr "nedoplaceno"
 
-#: models.py:75
+#: models.py:94
 msgid "overPaid"
 msgstr "přeplaceno"
 
-#: models.py:76
+#: models.py:95
 msgid "unassigned"
 msgstr "nespárováno"
+
+#: templates/invoices/invoice_mail.html:4
+msgid "Hi, we are sending you an invoice with following contents"
+msgstr "Dobrý den, posíláme fakturu za následující"
+
+#: templates/invoices/invoice_mail.html:6
+msgid "Number"
+msgstr "číslo"
+
+#: templates/invoices/invoice_mail.html:7
+msgid "issueDate"
+msgstr "datum plnění"
+
+#: templates/invoices/invoice_mail.html:8
+msgid "variable symbol"
+msgstr "variabilní symbol"
+
+#: templates/invoices/invoice_mail.html:9
+msgid "constant symbol"
+msgstr "konstantní symbol"
+
+#: templates/invoices/invoice_mail.html:10
+msgid "amount"
+msgstr "počet"
+
+#: templates/invoices/invoice_mail.html:11
+msgid "items"
+msgstr "položky"
+
+#: templates/invoices/invoice_mail.html:16
+#, python-format
+msgid "Yours sincerely, %(name)s team."
+msgstr "s pozdravem %(name)s tým."

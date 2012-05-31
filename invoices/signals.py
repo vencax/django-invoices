@@ -10,3 +10,7 @@ def invoice_saved(instance, sender, **kwargs):
     is incoming. Or notify partner if the invoice is outgoing.
     """
     pass
+
+def user_saved(instance, sender, **kwargs):
+    if not instance.companyinfo.all().exists():
+        instance.companyinfo.model(user=instance).save()
