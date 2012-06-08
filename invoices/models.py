@@ -3,46 +3,66 @@ from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from django.db.models.signals import post_save
-
-from .signals import invoice_saved, user_saved
 from django.template.loader import render_to_string
 from django.contrib.sites.models import Site
+from valueladder.models import Thing
+
+from .signals import invoice_saved
+from django.core.mail.message import EmailMessage
+
+
+class DefaultCurrencySaveMixin(object):
+    def save_currency(self):
+        if self.currency_id == None:
+            self.currency_id = settings.DEFAULT_CURRENCY
+
 
 class CompanyInfo(models.Model):
     """
-    Invoice info of an user.
+    Company info describing business partner.
     """
-    user = models.ForeignKey(User, unique=True, editable=False,
-                             related_name='companyinfo')
+    user = models.ForeignKey(User, unique=True, related_name='companyinfo')
     bankaccount = models.CharField(_('bankaccount'), max_length=32)
     inum = models.CharField(_('inum'), max_length=32, null=True, blank=True)
     tinum = models.CharField(_('tinum'), max_length=32, null=True, blank=True)
-    state = models.CharField(_('state'), max_length=3, 
+    state = models.CharField(_('state'), max_length=3,
                              default=settings.DEFAULT_STATE_CODE)
     town = models.CharField(_('town'), max_length=32)
     address = models.CharField(_('address'), max_length=64)
     phone = models.IntegerField(_('phone'))
     
-post_save.connect(user_saved, sender=User, dispatch_uid='user_saves')
+    def __unicode__(self):
+        return 'Company %s' % self.user.get_full_name()
 
 
-class Invoice(models.Model):
+class Invoice(models.Model, DefaultCurrencySaveMixin):
     """
     Represents an invoice.
     """
+    PREPAID = 3
     typeChoices = [
         ('i', _('inInvoice')),
         ('o',  _('outInvoice'))
     ]
+    paymentWayChoices = [
+        (1,  _('cash')),
+        (2,  _('transfer')),
+        (PREPAID, _('prepaid')),
+    ] 
 
     issueDate = models.DateField(editable=False, auto_now_add=True)
-    partner = models.ForeignKey(User, verbose_name=_('partner'),
-                                related_name='invoices')
+    contractor = models.ForeignKey(CompanyInfo, verbose_name=_('contractor'),
+                                related_name='outinvoices')
+    subscriber = models.ForeignKey(CompanyInfo, verbose_name=_('subscriber'),
+                                related_name='ininvoices')
     typee = models.CharField(max_length=1, verbose_name=_('typee'),
                              choices=typeChoices)
+    paymentWay = models.IntegerField(verbose_name=_('paymentWay'),
+                                     choices=paymentWayChoices)
     paid = models.BooleanField(verbose_name=_('paid'),
                                editable=False, default=False)
-    
+    currency = models.ForeignKey(Thing, verbose_name=_('currency'))
+
     @models.permalink
     def get_absolute_url(self):
         return ('invoice_detail', (self.id,))
@@ -52,22 +72,40 @@ class Invoice(models.Model):
         for i in self.items.all():
             total += (i.price * i.count)
         return total
-    
+
     def send(self, **kwargs):
         """
-        Sends this invoice to partner as mail. 
+        Sends this invoice to partner as mail.
         """
         ctx = kwargs
         ctx.update({'invoice' : self, 'name' : Site.objects.get_current()})
         mailContent = render_to_string('invoices/invoice_mail.html', ctx)
-        self.partner.email_user(self, mailContent)
-    
+        message = EmailMessage(_('invoice'), mailContent, 
+                               self.contractor.user.email,
+                               [self.subscriber.user.email], [])
+        
+        from pdfgen import InvoicePdfGenerator
+        import StringIO
+        stream = StringIO.StringIO()
+        InvoicePdfGenerator(stream).generate(self)
+        
+        message.attach('%s.pdf' % _('invoice'), stream.getvalue(), 'application/pdf')
+        message.send(fail_silently=True)
+
+    def save(self, *args, **kwargs):
+        if self.contractor_id == None:
+            self.contractor_id = 1
+        self.save_currency()
+        super(Invoice, self).save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        """ Do not allow to delete our company ... """
+        if self.id != 1:
+            super(Invoice, self).delete(*args, **kwargs)
+
+
 post_save.connect(invoice_saved, sender=Invoice, dispatch_uid='invoice_save')
 
-
-currencyChoices = [
-  ('CZK', _('CZKName')),
-]
 
 class Item(models.Model):
     """
@@ -77,13 +115,10 @@ class Item(models.Model):
     count = models.IntegerField(verbose_name=_('count'), default=1)
     price = models.FloatField(verbose_name=_('price'))
     invoice = models.ForeignKey(Invoice, related_name='items')
-    currency = models.CharField(max_length=3, verbose_name=_('currency'),
-                                choices=currencyChoices,
-                                default=settings.DEFAULT_CURRENCY)
 
     def __unicode__(self):
-        return '%s;%s;%s;%s' % (self.name, self.count, 
-                                self.price, self.currency)
+        return '%s;%s;%s' % (self.name, self.count, self.price)
+
 
 class BadIncommingTransfer(models.Model):
     """
