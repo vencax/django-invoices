@@ -3,9 +3,9 @@
         "pk": "2", 
         "model": "auth.user", 
         "fields": {
-            "username": "testclient", 
-            "first_name": "Test", 
-            "last_name": "Client", 
+            "username": "mycompany", 
+            "first_name": "Food",
+            "last_name": "Cooker", 
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
@@ -21,9 +21,9 @@
         "pk": "3", 
         "model": "auth.user", 
         "fields": {
-            "username": "mycompany", 
-            "first_name": "Food",
-            "last_name": "Cooker", 
+            "username": "testclient", 
+            "first_name": "Test", 
+            "last_name": "Client", 
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
@@ -33,6 +33,20 @@
             "password": "sha1$6efc0$f93efe9fd7542f25a7be94871ea45aa95de57161", 
             "email": "testclient@example.com", 
             "date_joined": "2006-12-17 07:03:31"
+        }
+    },
+    {
+        "pk": 1, 
+        "model": "invoices.companyinfo", 
+        "fields": {
+            "bankaccount": "123456678/2010", 
+            "town": "Town", 
+            "address": "Address", 
+            "phone": 123456789, 
+            "state": "CZE", 
+            "user": 2, 
+            "inum": "", 
+            "tinum": ""
         }
     }
 ]
