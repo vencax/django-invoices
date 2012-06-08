@@ -7,6 +7,8 @@ from django.core.management.base import BaseCommand
 import logging
 from invoices.models import Invoice
 from invoices.pdfgen import InvoicePdfGenerator
+from django.conf import settings
+from django.utils.translation import activate
 
 class Command(BaseCommand):
     args = ''
@@ -14,6 +16,7 @@ class Command(BaseCommand):
     
     def handle(self, *args, **options):
         logging.basicConfig()
+        activate(settings.LANGUAGE_CODE)
         
         if len(args) < 2:
             logging.error('USAGE: invoiceID fileToWrite')
