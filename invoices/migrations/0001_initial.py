@@ -29,6 +29,7 @@ class Migration(SchemaMigration):
             ('contractor', self.gf('django.db.models.fields.related.ForeignKey')(related_name='outinvoices', to=orm['invoices.CompanyInfo'])),
             ('subscriber', self.gf('django.db.models.fields.related.ForeignKey')(related_name='ininvoices', to=orm['invoices.CompanyInfo'])),
             ('typee', self.gf('django.db.models.fields.CharField')(max_length=1)),
+            ('paymentWay', self.gf('django.db.models.fields.IntegerField')()),
             ('paid', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('currency', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['valueladder.Thing'])),
         ))
@@ -131,6 +132,7 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'issueDate': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'paid': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'paymentWay': ('django.db.models.fields.IntegerField', [], {}),
             'subscriber': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'ininvoices'", 'to': "orm['invoices.CompanyInfo']"}),
             'typee': ('django.db.models.fields.CharField', [], {'max_length': '1'})
         },
