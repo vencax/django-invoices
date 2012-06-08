@@ -11,10 +11,14 @@ class Migration(SchemaMigration):
         # Adding model 'CompanyInfo'
         db.create_table('invoices_companyinfo', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], unique=True)),
+            ('user', self.gf('django.db.models.fields.related.ForeignKey')(related_name='companyinfo', unique=True, to=orm['auth.User'])),
             ('bankaccount', self.gf('django.db.models.fields.CharField')(max_length=32)),
             ('inum', self.gf('django.db.models.fields.CharField')(max_length=32, null=True, blank=True)),
             ('tinum', self.gf('django.db.models.fields.CharField')(max_length=32, null=True, blank=True)),
+            ('state', self.gf('django.db.models.fields.CharField')(default='CZE', max_length=3)),
+            ('town', self.gf('django.db.models.fields.CharField')(max_length=32)),
+            ('address', self.gf('django.db.models.fields.CharField')(max_length=64)),
+            ('phone', self.gf('django.db.models.fields.IntegerField')()),
         ))
         db.send_create_signal('invoices', ['CompanyInfo'])
 
@@ -22,9 +26,11 @@ class Migration(SchemaMigration):
         db.create_table('invoices_invoice', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('issueDate', self.gf('django.db.models.fields.DateField')(auto_now_add=True, blank=True)),
-            ('partner', self.gf('django.db.models.fields.related.ForeignKey')(related_name='invoices', to=orm['auth.User'])),
+            ('contractor', self.gf('django.db.models.fields.related.ForeignKey')(related_name='outinvoices', to=orm['invoices.CompanyInfo'])),
+            ('subscriber', self.gf('django.db.models.fields.related.ForeignKey')(related_name='ininvoices', to=orm['invoices.CompanyInfo'])),
             ('typee', self.gf('django.db.models.fields.CharField')(max_length=1)),
             ('paid', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('currency', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['valueladder.Thing'])),
         ))
         db.send_create_signal('invoices', ['Invoice'])
 
@@ -32,10 +38,9 @@ class Migration(SchemaMigration):
         db.create_table('invoices_item', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=64)),
-            ('count', self.gf('django.db.models.fields.IntegerField')()),
+            ('count', self.gf('django.db.models.fields.IntegerField')(default=1)),
             ('price', self.gf('django.db.models.fields.FloatField')()),
-            ('invoice', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['invoices.Invoice'])),
-            ('currency', self.gf('django.db.models.fields.CharField')(default='CZK', max_length=3)),
+            ('invoice', self.gf('django.db.models.fields.related.ForeignKey')(related_name='items', to=orm['invoices.Invoice'])),
         ))
         db.send_create_signal('invoices', ['Item'])
 
@@ -109,28 +114,38 @@ class Migration(SchemaMigration):
         },
         'invoices.companyinfo': {
             'Meta': {'object_name': 'CompanyInfo'},
+            'address': ('django.db.models.fields.CharField', [], {'max_length': '64'}),
             'bankaccount': ('django.db.models.fields.CharField', [], {'max_length': '32'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'inum': ('django.db.models.fields.CharField', [], {'max_length': '32', 'null': 'True', 'blank': 'True'}),
+            'phone': ('django.db.models.fields.IntegerField', [], {}),
+            'state': ('django.db.models.fields.CharField', [], {'default': "'CZE'", 'max_length': '3'}),
             'tinum': ('django.db.models.fields.CharField', [], {'max_length': '32', 'null': 'True', 'blank': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'unique': 'True'})
+            'town': ('django.db.models.fields.CharField', [], {'max_length': '32'}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'companyinfo'", 'unique': 'True', 'to': "orm['auth.User']"})
         },
         'invoices.invoice': {
             'Meta': {'object_name': 'Invoice'},
+            'contractor': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'outinvoices'", 'to': "orm['invoices.CompanyInfo']"}),
+            'currency': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['valueladder.Thing']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'issueDate': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'paid': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'partner': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'invoices'", 'to': "orm['auth.User']"}),
+            'subscriber': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'ininvoices'", 'to': "orm['invoices.CompanyInfo']"}),
             'typee': ('django.db.models.fields.CharField', [], {'max_length': '1'})
         },
         'invoices.item': {
             'Meta': {'object_name': 'Item'},
-            'count': ('django.db.models.fields.IntegerField', [], {}),
-            'currency': ('django.db.models.fields.CharField', [], {'default': "'CZK'", 'max_length': '3'}),
+            'count': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'invoice': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['invoices.Invoice']"}),
+            'invoice': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'items'", 'to': "orm['invoices.Invoice']"}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '64'}),
             'price': ('django.db.models.fields.FloatField', [], {})
+        },
+        'valueladder.thing': {
+            'Meta': {'object_name': 'Thing'},
+            'code': ('django.db.models.fields.CharField', [], {'max_length': '16'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
         }
     }
 
