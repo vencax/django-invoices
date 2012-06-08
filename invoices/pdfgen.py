@@ -24,8 +24,11 @@ class InvoicePdfGenerator(object):
     def __init__(self, stream):
         self.p = canvas.Canvas(stream, pagesize=letter)
         if hasattr(settings, 'CUSTOM_FONT'):
-            fonfname, fontfile = settings.CUSTOM_FONT
-            pdfmetrics.registerFont(TTFont(fonfname, fontfile))
+            try:
+                fonfname, fontfile = settings.CUSTOM_FONT
+                pdfmetrics.registerFont(TTFont(fonfname, fontfile))
+            except:
+                pass
             self.p.setFont(fonfname, 12)
         
     def generate(self, invoice):
