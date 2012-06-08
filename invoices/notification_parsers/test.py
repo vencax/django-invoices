@@ -12,6 +12,6 @@ def sendTestMessage(msg):
     message += '\r\n'
     
     import smtplib
-    c = smtplib.SMTP('localhost', 8025)
+    c = smtplib.SMTP('192.168.1.1', 25)
     c.sendmail(fromAddr, toAddrs, msg)
     c.quit()
