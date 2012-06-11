@@ -15,8 +15,10 @@ from django.conf import settings
 import os
 
 
-
 class InvoicePdfGenerator(object):
+    """
+    This class can print an invoice object into PDF stream.
+    """
     lineWidth = 14
     titleWidth = 100
     signPicture = os.path.join(settings.STATIC_ROOT, 'invoices', 'invoiceSign.png')
@@ -57,7 +59,7 @@ class InvoicePdfGenerator(object):
     def _drawContractor(self, invoice):
         x, y = 100, 120
         
-        self._ds(x, y, ugettext('contractor').encode('utf-8'))
+        self._ds(x, y, ugettext('contractor'))
         y += 20
         self._ds(x, y, invoice.contractor.user.get_full_name())
         y += self.lineWidth
@@ -84,7 +86,7 @@ class InvoicePdfGenerator(object):
     
     def _drawSubscriber(self, invoice):
         x, y = 320, 120
-        self._ds(x, y, ugettext('subscriber').encode('utf-8'))
+        self._ds(x, y, ugettext('subscriber'))
         y += 20
         self._ds(x, y, invoice.subscriber.user.get_full_name())
         y += self.lineWidth
@@ -101,14 +103,14 @@ class InvoicePdfGenerator(object):
         self._ds(x+self.titleWidth, y, invoice.subscriber.tinum or ugettext('Not tax payer'))
         y += self.lineWidth
         self._ds(x, y, ugettext('issueDate'))
-        self._ds(x+self.titleWidth, y, invoice.issueDate.strftime("%d. %m. %y"))
+        self._ds(x+self.titleWidth, y, invoice.issueDate.strftime("%d. %m. %Y"))
         y += self.lineWidth
         self._ds(x, y, ugettext('dueDate'))
         dDate = invoice.issueDate + datetime.timedelta(14)                
-        self._ds(x+self.titleWidth, y, dDate.strftime("%d. %m. %y"))
+        self._ds(x+self.titleWidth, y, dDate.strftime("%d. %m. %Y"))
         y += self.lineWidth
         self._ds(x, y, ugettext('dataOfUZP'))
-        self._ds(x+self.titleWidth, y, invoice.issueDate.strftime("%d. %m. %y"))
+        self._ds(x+self.titleWidth, y, invoice.issueDate.strftime("%d. %m. %Y"))
     
     def _drawItems(self, invoice):
         x, y = 100, 300
