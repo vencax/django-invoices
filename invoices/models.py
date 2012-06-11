@@ -94,13 +94,13 @@ class Invoice(models.Model, DefaultCurrencySaveMixin):
 
     def save(self, *args, **kwargs):
         if self.contractor_id == None:
-            self.contractor_id = 1
+            self.contractor_id = settings.OUR_COMPANY_ID
         self.save_currency()
         super(Invoice, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         """ Do not allow to delete our company ... """
-        if self.id != 1:
+        if self.id != settings.OUR_COMPANY_ID:
             super(Invoice, self).delete(*args, **kwargs)
 
 
