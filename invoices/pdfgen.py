@@ -125,17 +125,20 @@ class InvoicePdfGenerator(object):
             y += self.lineWidth
             self._ds(x, y, i.name)
             self._ds(x+280, y, str(i.count))
-            self._ds(x+350, y, str(i.price))
+            self._ds(x+350, y, self._printMoney(i.price, invoice))
                   
         y += 4
         self._line(y)
         
         y += self.lineWidth
         self._ds(x, y, '%s:' % ugettext('TotalPrice'))
-        self._ds(x+350, y, str(invoice.totalPrice()))
+        self._ds(x+350, y, self._printMoney(invoice.totalPrice(), invoice))
         
         if os.path.exists(self.signPicture):
             self.p.drawImage(self.signPicture, x+200, y)
+            
+    def _printMoney(self, value, invoice):
+        return ('%.2f %s' % (value, invoice.currency.code)).replace('.', ',')
     
 # -----------------------------------------------------------------------------
 if __name__ == "__main__":

@@ -28,8 +28,8 @@ class Migration(SchemaMigration):
             ('issueDate', self.gf('django.db.models.fields.DateField')(auto_now_add=True, blank=True)),
             ('contractor', self.gf('django.db.models.fields.related.ForeignKey')(related_name='outinvoices', to=orm['invoices.CompanyInfo'])),
             ('subscriber', self.gf('django.db.models.fields.related.ForeignKey')(related_name='ininvoices', to=orm['invoices.CompanyInfo'])),
-            ('typee', self.gf('django.db.models.fields.CharField')(max_length=1)),
-            ('paymentWay', self.gf('django.db.models.fields.IntegerField')()),
+            ('direction', self.gf('django.db.models.fields.CharField')(default='o', max_length=1)),
+            ('paymentWay', self.gf('django.db.models.fields.IntegerField')(default=2)),
             ('paid', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('currency', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['valueladder.Thing'])),
         ))
@@ -129,12 +129,12 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'Invoice'},
             'contractor': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'outinvoices'", 'to': "orm['invoices.CompanyInfo']"}),
             'currency': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['valueladder.Thing']"}),
+            'direction': ('django.db.models.fields.CharField', [], {'default': "'o'", 'max_length': '1'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'issueDate': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'paid': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'paymentWay': ('django.db.models.fields.IntegerField', [], {}),
-            'subscriber': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'ininvoices'", 'to': "orm['invoices.CompanyInfo']"}),
-            'typee': ('django.db.models.fields.CharField', [], {'max_length': '1'})
+            'paymentWay': ('django.db.models.fields.IntegerField', [], {'default': '2'}),
+            'subscriber': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'ininvoices'", 'to': "orm['invoices.CompanyInfo']"})
         },
         'invoices.item': {
             'Meta': {'object_name': 'Item'},

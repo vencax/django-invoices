@@ -3,12 +3,10 @@ from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from django.db.models.signals import post_save
-from django.template.loader import render_to_string
-from django.contrib.sites.models import Site
 from valueladder.models import Thing
 
 from .signals import invoice_saved
-from django.core.mail.message import EmailMessage
+from .mailing import sendInvoice
 
 
 class DefaultCurrencySaveMixin(object):
@@ -39,26 +37,24 @@ class Invoice(models.Model, DefaultCurrencySaveMixin):
     """
     Represents an invoice.
     """
-    PREPAID = 3
-    typeChoices = [
+    dirChoices = [
         ('i', _('inInvoice')),
         ('o',  _('outInvoice'))
     ]
     paymentWayChoices = [
         (1,  _('cash')),
         (2,  _('transfer')),
-        (PREPAID, _('prepaid')),
-    ] 
+    ]
 
     issueDate = models.DateField(editable=False, auto_now_add=True)
     contractor = models.ForeignKey(CompanyInfo, verbose_name=_('contractor'),
                                 related_name='outinvoices')
     subscriber = models.ForeignKey(CompanyInfo, verbose_name=_('subscriber'),
                                 related_name='ininvoices')
-    typee = models.CharField(max_length=1, verbose_name=_('typee'),
-                             choices=typeChoices)
+    direction = models.CharField(max_length=1, verbose_name=_('direction'),
+                                 choices=dirChoices, default='o')
     paymentWay = models.IntegerField(verbose_name=_('paymentWay'),
-                                     choices=paymentWayChoices)
+                                     choices=paymentWayChoices, default=2)
     paid = models.BooleanField(verbose_name=_('paid'),
                                editable=False, default=False)
     currency = models.ForeignKey(Thing, verbose_name=_('currency'))
@@ -77,20 +73,7 @@ class Invoice(models.Model, DefaultCurrencySaveMixin):
         """
         Sends this invoice to partner as mail.
         """
-        ctx = kwargs
-        ctx.update({'invoice' : self, 'name' : Site.objects.get_current()})
-        mailContent = render_to_string('invoices/invoice_mail.html', ctx)
-        message = EmailMessage(_('invoice'), mailContent, 
-                               self.contractor.user.email,
-                               [self.subscriber.user.email], [])
-        
-        from pdfgen import InvoicePdfGenerator
-        import StringIO
-        stream = StringIO.StringIO()
-        InvoicePdfGenerator(stream).generate(self)
-        
-        message.attach('%s.pdf' % _('invoice'), stream.getvalue(), 'application/pdf')
-        message.send(fail_silently=True)
+        sendInvoice(self, **(kwargs))
 
     def save(self, *args, **kwargs):
         if self.contractor_id == None:
@@ -105,7 +88,6 @@ class Invoice(models.Model, DefaultCurrencySaveMixin):
 
 
 post_save.connect(invoice_saved, sender=Invoice, dispatch_uid='invoice_save')
-
 
 class Item(models.Model):
     """

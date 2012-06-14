@@ -13,8 +13,8 @@ totalPrice.short_description = _('TotalPrice')
 
 class InvoiceAdmin(admin.ModelAdmin):
     inlines = [ItemsInline]
-    list_display = ['issueDate', 'contractor', 'subscriber', 'typee', totalPrice, 'paid']
-    list_filter = ['paid', 'typee']
+    list_display = ['issueDate', 'contractor', 'subscriber', 'direction', totalPrice, 'paid']
+    list_filter = ['paid', 'direction']
     date_hierarchy = 'issueDate'
 
     def queryset(self, request):
