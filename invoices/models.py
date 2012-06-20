@@ -8,7 +8,6 @@ from valueladder.models import Thing
 from .signals import invoice_saved
 from .mailing import sendInvoice
 
-
 class DefaultCurrencySaveMixin(object):
     def save_currency(self):
         if self.currency_id == None:
@@ -19,15 +18,22 @@ class CompanyInfo(models.Model):
     """
     Company info describing business partner.
     """
+    @classmethod
+    def get_our_company_info(cls):
+        return cls.objects.get(user__id=settings.OUR_COMPANY_ID)
+    
     user = models.ForeignKey(User, unique=True, related_name='companyinfo')
-    bankaccount = models.CharField(_('bankaccount'), max_length=32)
+    bankaccount = models.CharField(_('bankaccount'), max_length=32,
+                                   default='00000')
     inum = models.CharField(_('inum'), max_length=32, null=True, blank=True)
     tinum = models.CharField(_('tinum'), max_length=32, null=True, blank=True)
     state = models.CharField(_('state'), max_length=3,
                              default=settings.DEFAULT_STATE_CODE)
     town = models.CharField(_('town'), max_length=32)
-    address = models.CharField(_('address'), max_length=64)
-    phone = models.IntegerField(_('phone'))
+    zipcode = models.CharField(_('zipcode'), max_length=32,
+                               default='00000')
+    address = models.CharField(_('address'), max_length=64, default='00000')
+    phone = models.IntegerField(_('phone'), default=0)
     
     def __unicode__(self):
         return 'Company %s' % self.user.get_full_name()
@@ -37,6 +43,10 @@ class Invoice(models.Model, DefaultCurrencySaveMixin):
     """
     Represents an invoice.
     """
+    @classmethod
+    def get_default_currency(cls):
+        return Thing.objects.get(code=settings.DEFAULT_CURRENCY)
+    
     dirChoices = [
         ('i', _('inInvoice')),
         ('o',  _('outInvoice'))
@@ -121,3 +131,10 @@ class BadIncommingTransfer(models.Model):
     def __unicode__(self):
         return '%s => %s \n%s' % (self.get_typee_display(), self.invoice,
                                   self.transactionInfo)
+
+try:
+    from socialauthapp.profile import ProfileEditForm
+    from .forms import CompanyInfoForm
+    ProfileEditForm.register_form(CompanyInfoForm)
+except ImportError:
+    pass
