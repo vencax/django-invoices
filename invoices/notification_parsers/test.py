@@ -3,9 +3,9 @@ Created on Jan 2, 2012
 
 @author: vencax
 '''
-def sendTestMessage(msg):
+def sendTestMessage(msg, to):
     fromAddr = 'banka@banka.cz'
-    toAddrs = ['credit@vpn.vxk.cz']
+    toAddrs = [to]
     
     message = ("From: %s\r\nTo: %s\r\n\r\n" % (fromAddr, ", ".join(toAddrs)))
     message += msg

@@ -5,7 +5,6 @@ Created on Jan 2, 2012
 @author: vencax
 '''
 import re
-from test import sendTestMessage
 
 class Parser(object):
     amountRe = re.compile(u'Částka:[ ]*(?P<Amount>[0-9,]+)')
@@ -30,4 +29,5 @@ ALBERT HM 2799 PRAH Aktuální zůstatek: 739,94 \
 Protiúčet: platba kartou SS: 6761657716 KS:
 """
     print parser.parse(data)
-    sendTestMessage(data)
+    from test import sendTestMessage
+    sendTestMessage(data, 'credit@domain.cz')
