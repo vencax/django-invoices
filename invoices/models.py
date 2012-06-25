@@ -8,11 +8,6 @@ from valueladder.models import Thing
 from .signals import invoice_saved
 from .mailing import sendInvoice
 
-class DefaultCurrencySaveMixin(object):
-    def save_currency(self):
-        if self.currency_id == None:
-            self.currency_id = settings.DEFAULT_CURRENCY
-
 
 class CompanyInfo(models.Model):
     """
@@ -39,7 +34,7 @@ class CompanyInfo(models.Model):
         return 'Company %s' % self.user.get_full_name()
 
 
-class Invoice(models.Model, DefaultCurrencySaveMixin):
+class Invoice(models.Model):
     """
     Represents an invoice.
     """
@@ -88,7 +83,8 @@ class Invoice(models.Model, DefaultCurrencySaveMixin):
     def save(self, *args, **kwargs):
         if self.contractor_id == None:
             self.contractor_id = settings.OUR_COMPANY_ID
-        self.save_currency()
+        if self.currency_id == None:
+            self.currency = self.get_default_currency()
         super(Invoice, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
@@ -96,8 +92,8 @@ class Invoice(models.Model, DefaultCurrencySaveMixin):
         if self.id != settings.OUR_COMPANY_ID:
             super(Invoice, self).delete(*args, **kwargs)
 
-
 post_save.connect(invoice_saved, sender=Invoice, dispatch_uid='invoice_save')
+
 
 class Item(models.Model):
     """
@@ -132,6 +128,8 @@ class BadIncommingTransfer(models.Model):
         return '%s => %s \n%s' % (self.get_typee_display(), self.invoice,
                                   self.transactionInfo)
 
+
+# register company info form to global profile edit
 try:
     from socialauthapp.profile import ProfileEditForm
     from .forms import CompanyInfoForm
