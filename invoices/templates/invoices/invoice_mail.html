@@ -4,14 +4,10 @@
 {% trans 'Hi, we are sending you an invoice with following contents' %}:
 
 {% trans 'Number' %}:{{ invoice.id }}
-{% trans 'issueDate' %}:{{ invoice.issueDate }}
+{% trans 'dueDate' %}:{{ invoice.dueDate }}
 {% trans 'variable symbol' %}:{{ invoice.id }}
 {% trans 'constant symbol' %}:{{ invoice.issueDate|date:"mY" }}
 {% trans 'amount' %}:{{ invoice.totalPrice }}
-{% trans 'items' %}:
-{% for i in invoice.items.all %}
-{{ i }}
-{% endfor %} 
 
 {% blocktrans %}Yours sincerely, {{ name }} robot.{% endblocktrans %} 
 
