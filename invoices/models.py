@@ -32,6 +32,11 @@ class CompanyInfo(models.Model):
     
     def __unicode__(self):
         return 'Company %s' % self.user.get_full_name()
+    
+    def delete(self, *args, **kwargs):
+        """ Do not allow to delete our company ... """
+        if self.user__id != settings.OUR_COMPANY_ID:
+            super(Invoice, self).delete(*args, **kwargs)
 
 
 class Invoice(models.Model):
@@ -41,6 +46,10 @@ class Invoice(models.Model):
     @classmethod
     def get_default_currency(cls):
         return Thing.objects.get(code=settings.DEFAULT_CURRENCY)
+    
+    @classmethod
+    def get_my_company_info(cls):
+        return CompanyInfo.objects.get(user__id=settings.OUR_COMPANY_ID)
     
     dirChoices = [
         ('i', _('inInvoice')),
@@ -82,15 +91,11 @@ class Invoice(models.Model):
 
     def save(self, *args, **kwargs):
         if self.contractor_id == None:
-            self.contractor_id = settings.OUR_COMPANY_ID
+            self.contractor = self.get_my_company_info()
         if self.currency_id == None:
             self.currency = self.get_default_currency()
         super(Invoice, self).save(*args, **kwargs)
 
-    def delete(self, *args, **kwargs):
-        """ Do not allow to delete our company ... """
-        if self.id != settings.OUR_COMPANY_ID:
-            super(Invoice, self).delete(*args, **kwargs)
 
 post_save.connect(invoice_saved, sender=Invoice, dispatch_uid='invoice_save')
 
