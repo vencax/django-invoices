@@ -105,9 +105,8 @@ class InvoicePdfGenerator(object):
         self._ds(x, y, ugettext('issueDate'))
         self._ds(x+self.titleWidth, y, invoice.issueDate.strftime("%d. %m. %Y"))
         y += self.lineWidth
-        self._ds(x, y, ugettext('dueDate'))
-        dDate = invoice.issueDate + datetime.timedelta(14)                
-        self._ds(x+self.titleWidth, y, dDate.strftime("%d. %m. %Y"))
+        self._ds(x, y, ugettext('dueDate'))          
+        self._ds(x+self.titleWidth, y, invoice.dueDate.strftime("%d. %m. %Y"))
         y += self.lineWidth
         self._ds(x, y, ugettext('dataOfUZP'))
         self._ds(x+self.titleWidth, y, invoice.issueDate.strftime("%d. %m. %Y"))

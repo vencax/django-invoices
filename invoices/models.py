@@ -7,7 +7,9 @@ from valueladder.models import Thing
 
 from .signals import invoice_saved
 from .mailing import sendInvoice
+import datetime
 
+INVOICE_DUE_INTERVAL = getattr(settings, 'INVOICE_DUE_INTERVAL', 14)
 
 class CompanyInfo(models.Model):
     """
@@ -72,6 +74,10 @@ class Invoice(models.Model):
     paid = models.BooleanField(verbose_name=_('paid'),
                                editable=False, default=False)
     currency = models.ForeignKey(Thing, verbose_name=_('currency'))
+    
+    @property
+    def dueDate(self):
+        return self.issueDate + datetime.timedelta(INVOICE_DUE_INTERVAL)
 
     @models.permalink
     def get_absolute_url(self):
