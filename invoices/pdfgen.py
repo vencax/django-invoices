@@ -102,13 +102,13 @@ class InvoicePdfGenerator(object):
         self._ds(x, y, '%s:' % ugettext('tinum'))
         self._ds(x+self.titleWidth, y, invoice.subscriber.tinum or ugettext('Not tax payer'))
         y += self.lineWidth
-        self._ds(x, y, ugettext('issueDate'))
+        self._ds(x, y, '%s:' % ugettext('issueDate'))
         self._ds(x+self.titleWidth, y, invoice.issueDate.strftime("%d. %m. %Y"))
         y += self.lineWidth
-        self._ds(x, y, ugettext('dueDate'))          
+        self._ds(x, y, '%s:' % ugettext('dueDate'))          
         self._ds(x+self.titleWidth, y, invoice.dueDate.strftime("%d. %m. %Y"))
         y += self.lineWidth
-        self._ds(x, y, ugettext('dataOfUZP'))
+        self._ds(x, y, '%s:' % ugettext('dataOfUZP'))
         self._ds(x+self.titleWidth, y, invoice.issueDate.strftime("%d. %m. %Y"))
     
     def _drawItems(self, invoice):

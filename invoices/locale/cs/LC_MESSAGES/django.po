@@ -23,7 +23,7 @@ msgstr "Celková cena"
 
 #: models.py:25 pdfgen.py:70
 msgid "bankaccount"
-msgstr "Bankovní účet"
+msgstr "bankovní účet"
 
 #: models.py:26 pdfgen.py:58 pdfgen.py:85
 msgid "inum"
