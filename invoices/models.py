@@ -30,19 +30,19 @@ class CompanyInfo(models.Model):
     user = models.ForeignKey(User, verbose_name=_('user'), unique=True, 
                              related_name='companyinfo')
     bankaccount = models.CharField(_('bankaccount'), max_length=32,
-                                   default='00000')
+                                   default='------')
     inum = models.CharField(_('inum'), max_length=32, null=True, blank=True)
     tinum = models.CharField(_('tinum'), max_length=32, null=True, blank=True)
     state = models.CharField(_('state'), max_length=3,
                              default=settings.DEFAULT_STATE_CODE)
     town = models.CharField(_('town'), max_length=32)
     zipcode = models.CharField(_('zipcode'), max_length=32,
-                               default='00000')
-    address = models.CharField(_('address'), max_length=64, default='00000')
+                               default='------')
+    address = models.CharField(_('address'), max_length=64, default='------')
     phone = models.IntegerField(_('phone'), default=0)
     
     def __unicode__(self):
-        return 'Company %s' % self.user.get_full_name()
+        return self.user.get_full_name()
     
     def delete(self, *args, **kwargs):
         """ Do not allow to delete our company ... """
