@@ -28,9 +28,9 @@ class BadIncommingTransferAdmin(admin.ModelAdmin):
     list_display = ['typee', 'invoice']
 
 class CompanyInfoAdmin(admin.ModelAdmin):
-    search_fields = ['town', 'user__first_name' ]
+    search_fields = ['town', 'user__first_name', 'zipcode', 'inum']
     list_filter = ['state']
-    list_display = ['user', 'state', 'town']
+    list_display = ['user', 'state', 'address', 'town', 'zipcode', 'inum']
 
 
 admin.site.register(CompanyInfo, CompanyInfoAdmin)

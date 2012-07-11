@@ -11,15 +11,24 @@ import datetime
 
 INVOICE_DUE_INTERVAL = getattr(settings, 'INVOICE_DUE_INTERVAL', 14)
 
+class CompanyInfoObjectManager(models.Manager):
+    """ Object manager that offers get_default thing method """
+    def get_our_company_info(self):
+        return self.get(user__id=settings.OUR_COMPANY_ID)
+
 class CompanyInfo(models.Model):
     """
     Company info describing business partner.
     """
-    @classmethod
-    def get_our_company_info(cls):
-        return cls.objects.get(user__id=settings.OUR_COMPANY_ID)
+    class Meta:
+        verbose_name = _('company info')
+        verbose_name_plural = _('company infos')
+        ordering = ['user__last_name']
     
-    user = models.ForeignKey(User, unique=True, related_name='companyinfo')
+    objects = CompanyInfoObjectManager()
+    
+    user = models.ForeignKey(User, verbose_name=_('user'), unique=True, 
+                             related_name='companyinfo')
     bankaccount = models.CharField(_('bankaccount'), max_length=32,
                                    default='00000')
     inum = models.CharField(_('inum'), max_length=32, null=True, blank=True)
@@ -45,13 +54,10 @@ class Invoice(models.Model):
     """
     Represents an invoice.
     """
-    @classmethod
-    def get_default_currency(cls):
-        return Thing.objects.get(code=settings.DEFAULT_CURRENCY)
-    
-    @classmethod
-    def get_my_company_info(cls):
-        return CompanyInfo.objects.get(user__id=settings.OUR_COMPANY_ID)
+    class Meta:
+        verbose_name = _('invoice')
+        verbose_name_plural = _('invoices')
+        ordering = ['issueDate']
     
     dirChoices = [
         ('i', _('inInvoice')),
@@ -62,7 +68,8 @@ class Invoice(models.Model):
         (2,  _('transfer')),
     ]
 
-    issueDate = models.DateField(editable=False, auto_now_add=True)
+    issueDate = models.DateField(verbose_name=_('issueDate'), editable=False, 
+                                 auto_now_add=True)
     contractor = models.ForeignKey(CompanyInfo, verbose_name=_('contractor'),
                                 related_name='outinvoices')
     subscriber = models.ForeignKey(CompanyInfo, verbose_name=_('subscriber'),
@@ -74,6 +81,9 @@ class Invoice(models.Model):
     paid = models.BooleanField(verbose_name=_('paid'),
                                editable=False, default=False)
     currency = models.ForeignKey(Thing, verbose_name=_('currency'))
+    
+    def __unicode__(self):
+        return '%s %i' % (_('invoice'), self.id)
     
     @property
     def dueDate(self):
@@ -123,6 +133,11 @@ class BadIncommingTransfer(models.Model):
     """
     This is saved when incoming transfer occurs.
     """
+    class Meta:
+        verbose_name = _('bad incomming transfer')
+        verbose_name_plural = _('bad incomming transfers')
+        ordering = ['invoice__issueDate']
+    
     BITChoices = [
         ('u', _('underPaid')),
         ('o', _('overPaid')),
@@ -130,9 +145,9 @@ class BadIncommingTransfer(models.Model):
     ]
 
     invoice = models.ForeignKey(Invoice, null=True, editable=True)
-    transactionInfo = models.CharField(max_length=512, verbose_name=_('name'),
-                                       editable=True)
-    typee = models.CharField(max_length=1, verbose_name=_('typee'),
+    transactionInfo = models.TextField(max_length=512, editable=True,
+                                       verbose_name=_('transaction info'))
+    typee = models.CharField(max_length=1, verbose_name=_('reason'),
                              choices=BITChoices, editable=True)
 
     def __unicode__(self):
