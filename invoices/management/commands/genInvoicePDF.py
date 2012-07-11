@@ -12,7 +12,7 @@ from django.utils.translation import activate
 
 class Command(BaseCommand):
     args = ''
-    help = 'parses incoming mail and takes actions base on it'
+    help = 'parses incoming mail and takes actions base on it' #@ReservedAssignment
     
     def handle(self, *args, **options):
         logging.basicConfig()
