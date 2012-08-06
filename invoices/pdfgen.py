@@ -13,7 +13,9 @@ from django.utils.translation import ugettext
 import datetime
 from django.conf import settings
 import os
+from django.contrib.staticfiles import finders
 
+EXTRA_CONTRACTOR_TEXT = getattr(settings, 'EXTRA_CONTRACTOR_TEXT', None)
 
 class InvoicePdfGenerator(object):
     """
@@ -27,11 +29,12 @@ class InvoicePdfGenerator(object):
         self.p = canvas.Canvas(stream, pagesize=letter)
         if hasattr(settings, 'CUSTOM_FONT'):
             try:
-                fonfname, fontfile = settings.CUSTOM_FONT
-                pdfmetrics.registerFont(TTFont(fonfname, fontfile))
+                fontname, fontfile = settings.CUSTOM_FONT
+                fontfile = finders.find(fontfile)
+                pdfmetrics.registerFont(TTFont(fontname, fontfile))
+                self.p.setFont(fontname, 12)
             except:
                 pass
-            self.p.setFont(fonfname, 12)
         
     def generate(self, invoice):
         self.p.setFontSize(16)
@@ -68,6 +71,9 @@ class InvoicePdfGenerator(object):
         self._ds(x, y, invoice.contractor.town)
         y += self.lineWidth
         self._ds(x, y, invoice.contractor.state)
+        if EXTRA_CONTRACTOR_TEXT:
+            y += self.lineWidth
+            self._ds(x, y, EXTRA_CONTRACTOR_TEXT)
         y += self.lineWidth*2
         self._ds(x, y, '%s:' % ugettext('inum'))
         self._ds(x+self.titleWidth, y, invoice.contractor.inum)
