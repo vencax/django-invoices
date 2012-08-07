@@ -31,10 +31,10 @@ class Parser(object):
 
 if __name__ == "__main__":
     parser = Parser()
-    data = u"""P=F8=EDjem na kont=EC: 2400260986 =C8=E1stka: 500,00 VS: 1\
+    data = u"""P=F8=EDjem na kont=EC: 2400260986 =C8=E1stka: 100,00 VS: 19\
  Zpr=E1va p=F8=EDjemci: =20 Aktu=E1ln=ED z=F9statek: 20 144,82\
  Proti=FA=E8et: 321-2500109888/2010 SS:=20 KS: 0008
 """
     print parser.parse(data)
     from test import sendTestMessage
-    sendTestMessage(data, 'credit@domain.tld')
+    sendTestMessage(data, 'credit@vpn.vxk.cz')
