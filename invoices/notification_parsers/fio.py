@@ -37,4 +37,4 @@ if __name__ == "__main__":
 """
     print parser.parse(data)
     from test import sendTestMessage
-    sendTestMessage(data, 'credit@vpn.vxk.cz')
+    sendTestMessage(data, 'credit@domain.tld')
