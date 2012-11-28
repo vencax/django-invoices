@@ -24,15 +24,14 @@ class InvoicePdfGenerator(object):
     """
     lineWidth = 14
     titleWidth = 100
-    signPicture = os.path.join(settings.STATIC_ROOT, 'invoices',
-                               'invoiceSign.png')
+    signPicture = finders.find('invoices/invoiceSign.png')
 
     def __init__(self, stream):
         self.p = canvas.Canvas(stream, pagesize=letter)
         if hasattr(settings, 'CUSTOM_FONT'):
             try:
-                fontname, fontfile = settings.CUSTOM_FONT
-                fontfile = finders.find(fontfile)
+                fontname = settings.CUSTOM_FONT
+                fontfile = finders.find('invoices/%s.ttf' % fontname)
                 pdfmetrics.registerFont(TTFont(fontname, fontfile))
                 self.p.setFont(fontname, 12)
             except:
