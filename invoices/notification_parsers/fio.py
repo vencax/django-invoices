@@ -6,14 +6,16 @@ Created on Jan 2, 2012
 '''
 import re
 
+
 class Parser(object):
     amountRe = re.compile(u'=C8=E1stka:[ ]*(?P<Amount>[0-9 ]+,[0-9]{1,2})')
     VSRe = re.compile(u'VS:[ ]*(?P<VS>\d+)')
     SSRe = re.compile(u'SS:[ =]*(?P<SS>\d+)')
-    partnerAccountRe = re.compile('Proti=FA=E8et:[ ]*(?P<acc>[0-9]*-*[0-9]{1,10}/[0-9]{4})')
+    partnerAccountRe = re.compile('Proti=FA=E8et:[ ]*\
+(?P<acc>[0-9]*-*[0-9]{1,10}/[0-9]{4})')
     accountRe = re.compile(u' na kont=EC:[ ]*(?P<acc>\d+)')
     inTransRe = re.compile(u'P=F8=EDjem na kont=EC')
-    
+
     def parse(self, message):
         op = self.inTransRe.search(message)
         if op:

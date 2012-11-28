@@ -11,10 +11,12 @@ import datetime
 
 INVOICE_DUE_INTERVAL = getattr(settings, 'INVOICE_DUE_INTERVAL', 14)
 
+
 class CompanyInfoObjectManager(models.Manager):
     """ Object manager that offers get_default thing method """
     def get_our_company_info(self):
         return self.get(user__id=settings.OUR_COMPANY_ID)
+
 
 class CompanyInfo(models.Model):
     """
@@ -24,10 +26,10 @@ class CompanyInfo(models.Model):
         verbose_name = _('company info')
         verbose_name_plural = _('company infos')
         ordering = ['user__last_name']
-    
+
     objects = CompanyInfoObjectManager()
-    
-    user = models.ForeignKey(User, verbose_name=_('user'), unique=True, 
+
+    user = models.ForeignKey(User, verbose_name=_('user'), unique=True,
                              related_name='companyinfo')
     bankaccount = models.CharField(_('bankaccount'), max_length=32,
                                    default='------')
@@ -40,10 +42,10 @@ class CompanyInfo(models.Model):
                                default='------')
     address = models.CharField(_('address'), max_length=64, default='------')
     phone = models.IntegerField(_('phone'), default=0)
-    
+
     def __unicode__(self):
         return self.user.get_full_name()
-    
+
     def delete(self, *args, **kwargs):
         """ Do not allow to delete our company ... """
         if self.user__id != settings.OUR_COMPANY_ID:
@@ -58,7 +60,7 @@ class Invoice(models.Model):
         verbose_name = _('invoice')
         verbose_name_plural = _('invoices')
         ordering = ['issueDate']
-    
+
     dirChoices = [
         ('i', _('inInvoice')),
         ('o',  _('outInvoice'))
@@ -68,7 +70,7 @@ class Invoice(models.Model):
         (2,  _('transfer')),
     ]
 
-    issueDate = models.DateField(verbose_name=_('issueDate'), editable=False, 
+    issueDate = models.DateField(verbose_name=_('issueDate'), editable=False,
                                  auto_now_add=True)
     contractor = models.ForeignKey(CompanyInfo, verbose_name=_('contractor'),
                                 related_name='outinvoices')
@@ -81,10 +83,10 @@ class Invoice(models.Model):
     paid = models.BooleanField(verbose_name=_('paid'),
                                editable=False, default=False)
     currency = models.ForeignKey(Thing, verbose_name=_('currency'))
-    
+
     def __unicode__(self):
         return '%s %i' % (_('invoice'), self.id)
-    
+
     @property
     def dueDate(self):
         return self.issueDate + datetime.timedelta(INVOICE_DUE_INTERVAL)
@@ -137,7 +139,7 @@ class BadIncommingTransfer(models.Model):
         verbose_name = _('bad incomming transfer')
         verbose_name_plural = _('bad incomming transfers')
         ordering = ['invoice__issueDate']
-    
+
     BITChoices = [
         ('u', _('underPaid')),
         ('o', _('overPaid')),

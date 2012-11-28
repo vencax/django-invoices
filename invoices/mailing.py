@@ -12,25 +12,26 @@ from django.http import HttpResponse
 
 def sendInvoice(invoice, **kwargs):
     ctx = kwargs
-    ctx.update({'invoice' : invoice, 'name' : Site.objects.get_current()})
+    ctx.update({'invoice': invoice, 'name': Site.objects.get_current()})
     mailContent = render_to_string('invoices/invoice_mail.html', ctx)
-    message = EmailMessage(_('invoice'), mailContent, 
+    message = EmailMessage(_('invoice'), mailContent,
                            invoice.contractor.user.email,
                            [invoice.subscriber.user.email], [])
-    
+
     from pdfgen import InvoicePdfGenerator
     import StringIO
     stream = StringIO.StringIO()
     InvoicePdfGenerator(stream).generate(invoice)
-    
-    message.attach('%s.pdf' % _('invoice'), stream.getvalue(), 'application/pdf')
+
+    message.attach('%s.pdf' % _('invoice'),
+                   stream.getvalue(), 'application/pdf')
     message.send(fail_silently=True)
-    
-    
+
+
 def downloadInvoices(invoices, request):
     from pdfgen import InvoicePdfGenerator
     import StringIO
     stream = StringIO.StringIO()
     InvoicePdfGenerator(stream).generate(invoices[0])
-    
+
     return HttpResponse(stream.getvalue(), mimetype='application/pdf')
