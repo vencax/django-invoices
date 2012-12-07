@@ -2,7 +2,8 @@ from django.contrib import admin
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
-from models import Item, Invoice, BadIncommingTransfer, CompanyInfo
+from models import Item, Invoice, BadIncommingTransfer, \
+    CompanyInfo, RecurringInvoice
 from mailing import downloadInvoices
 
 
@@ -53,6 +54,11 @@ class CompanyInfoAdmin(admin.ModelAdmin):
     list_display = ['user', 'state', 'address', 'town', 'zipcode', 'inum']
 
 
+class RecurringInvoiceAdmin(admin.ModelAdmin):
+    list_filter = ('frequency', )
+    list_display = ('template', 'frequency', 'autosend')
+
 admin.site.register(CompanyInfo, CompanyInfoAdmin)
 admin.site.register(Invoice, InvoiceAdmin)
 admin.site.register(BadIncommingTransfer, BadIncommingTransferAdmin)
+admin.site.register(RecurringInvoice, RecurringInvoiceAdmin)

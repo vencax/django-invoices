@@ -157,6 +157,31 @@ class BadIncommingTransfer(models.Model):
                                   self.transactionInfo)
 
 
+class RecurringInvoice(models.Model):
+    """
+    Make selected invoice recurring - new invoices are generated
+    according the selected with selected frequency.
+    """
+    class Meta:
+        verbose_name = _('recurring invoice')
+        verbose_name_plural = _('recurring invoices')
+        ordering = ['frequency']
+
+    template = models.ForeignKey(Invoice, unique=True,
+                                 verbose_name=_('template'),
+                                 help_text=_('template invoice \
+that following recurring templates will be based on')
+    )
+    frequency = models.IntegerField(verbose_name=_('frequency'), choices=(
+        (0, _('daily')),
+        (1, _('weekly')),
+        (2, _('monthly')),
+        (3, _('quaterly')),
+        (4, _('yearly')),
+    ))
+    autosend = models.BooleanField(verbose_name=_('auto send'),
+        help_text=_('if it shall be automatically send to subscriber'))
+
 # register company info form to global profile edit
 try:
     from socialauthapp.profile import ProfileEditForm
