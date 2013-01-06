@@ -28,14 +28,13 @@ class InvoicePdfGenerator(object):
 
     def __init__(self, stream):
         self.p = canvas.Canvas(stream, pagesize=letter)
-        if hasattr(settings, 'CUSTOM_FONT'):
-            try:
-                fontname = settings.CUSTOM_FONT
-                fontfile = finders.find('invoices/%s.ttf' % fontname)
-                pdfmetrics.registerFont(TTFont(fontname, fontfile))
-                self.p.setFont(fontname, 12)
-            except:
-                pass
+        try:
+            fontname = 'opensans'
+            fontfile = finders.find('invoices/OpenSans-Regular.ttf')
+            pdfmetrics.registerFont(TTFont(fontname, fontfile))
+            self.p.setFont(fontname, 12)
+        except:
+            pass
 
     def generate(self, invoice):
         self.p.setFontSize(16)
