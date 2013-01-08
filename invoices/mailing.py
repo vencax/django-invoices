@@ -17,9 +17,11 @@ from .pdfgen import InvoicePdfGenerator
 
 EXTRA_CONTRACTOR_TEXT = getattr(settings, 'EXTRA_CONTRACTOR_TEXT', None)
 CUSTOM_FONT = getattr(settings, 'CUSTOM_FONT', 'invoices/OpenSans-Regular.ttf')
+invoiceHighlitColor = getattr(settings, 'INVOICE_HIGHLIGHT_COLOR', (0, 0, 1))
 fontFile = finders.find(CUSTOM_FONT)
 signPicture = finders.find('invoices/invoiceSign.png')
-generator = InvoicePdfGenerator(signPicture, fontFile, EXTRA_CONTRACTOR_TEXT)
+generator = InvoicePdfGenerator(signPicture, fontFile, EXTRA_CONTRACTOR_TEXT,
+                                invoiceHighlitColor)
 
 
 def sendInvoice(invoice, **kwargs):

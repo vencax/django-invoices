@@ -21,14 +21,15 @@ class InvoicePdfGenerator(object):
     This class can print an invoice object into PDF stream.
     """
 
-    def __init__(self, signPicture, fontfile, extraContractorText=None):
+    def __init__(self, signPicture, fontfile, extraContractorText=None,
+                 highlightColor=(1, 0, 0)):
         try:
             pdfmetrics.registerFont(TTFont('custom', fontfile))
             self.font = 'custom'
         except:
             self.font = 'Courier'
 
-        self._preapareStyles(self.font)
+        self._preapareStyles(self.font, highlightColor)
         self.extraContractorText = extraContractorText
         self.signPicture = signPicture
         self.doc = self.prepareDoc()
@@ -177,10 +178,10 @@ class InvoicePdfGenerator(object):
     def _printMoney(self, value, invoice):
         return ('%.2f %s' % (value, invoice.currency.code)).replace('.', ',')
 
-    def _preapareStyles(self, fontName):
+    def _preapareStyles(self, fontName, highlightColor):
         self.styles = styles.StyleSheet1()
 
-        c = colors.Color(1, 0, 0, 1)
+        c = colors.Color(*(highlightColor + (1, )))
 
         self.styles.add(styles.ParagraphStyle(name='Normal',
             fontName=fontName, fontSize=10, leading=12))
