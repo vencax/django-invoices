@@ -3,12 +3,14 @@
 
 {% trans 'Hi, we are sending you an invoice with following contents' %}:
 
-{% trans 'Number' %}:{{ invoice.id }}
 {% trans 'dueDate' %}:{{ invoice.dueDate }}
 {% trans 'variable symbol' %}:{{ invoice.id }}
 {% trans 'constant symbol' %}:{{ invoice.issueDate|date:"mY" }}
 {% trans 'amount' %}:{{ invoice.totalPrice }}
 
-{% blocktrans %}Yours sincerely, {{ name }} robot.{% endblocktrans %} 
+{% blocktrans %}
+Yours sincerely,
+{{ invoice.contractor.get_full_name }}.
+{% endblocktrans %} 
 
 {% if extraContent %}{{ extraContent }}{% endif %}
