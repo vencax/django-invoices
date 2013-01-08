@@ -8,6 +8,18 @@ from django.utils.translation import ugettext as _
 from django.template.loader import render_to_string
 from django.core.mail.message import EmailMessage
 from django.http import HttpResponse
+from django.contrib.staticfiles import finders
+from django.conf import settings
+import StringIO
+
+from .pdfgen import InvoicePdfGenerator
+
+
+EXTRA_CONTRACTOR_TEXT = getattr(settings, 'EXTRA_CONTRACTOR_TEXT', None)
+CUSTOM_FONT = getattr(settings, 'CUSTOM_FONT', 'invoices/OpenSans-Regular.ttf')
+fontFile = finders.find(CUSTOM_FONT)
+signPicture = finders.find('invoices/invoiceSign.png')
+generator = InvoicePdfGenerator(signPicture, fontFile, EXTRA_CONTRACTOR_TEXT)
 
 
 def sendInvoice(invoice, **kwargs):
@@ -18,10 +30,8 @@ def sendInvoice(invoice, **kwargs):
                            invoice.contractor.user.email,
                            [invoice.subscriber.user.email], [])
 
-    from pdfgen import InvoicePdfGenerator
-    import StringIO
     stream = StringIO.StringIO()
-    InvoicePdfGenerator(stream).generate(invoice)
+    generator.generate(invoice, stream)
 
     message.attach('%s.pdf' % _('invoice'),
                    stream.getvalue(), 'application/pdf')
@@ -29,9 +39,7 @@ def sendInvoice(invoice, **kwargs):
 
 
 def downloadInvoices(invoices, request):
-    from pdfgen import InvoicePdfGenerator
-    import StringIO
     stream = StringIO.StringIO()
-    InvoicePdfGenerator(stream).generate(invoices[0])
+    generator.generate(invoices[0], stream)
 
     return HttpResponse(stream.getvalue(), mimetype='application/pdf')
