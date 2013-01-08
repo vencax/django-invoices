@@ -124,7 +124,7 @@ class InvoicePdfGenerator(object):
 
         self._draw_labeled('issueDate',
             invoice.issueDate.strftime("%d. %m. %Y"), tabledata)
-        self._draw_labeled('dataOfUZP',
+        self._draw_labeled('dueDate',
             invoice.dueDate.strftime("%d. %m. %Y"), tabledata)
         self._draw_labeled('dataOfUZP',
             invoice.issueDate.strftime("%d. %m. %Y"), tabledata)
