@@ -9,6 +9,6 @@
 {% trans 'amount' %}:{{ invoice.totalPrice }}
 
 {% trans 'Yours sincerely' %},
-{{ invoice.contractor.get_full_name }}.
+{{ invoice.contractor.user.get_full_name }}.
 
 {% if extraContent %}{{ extraContent }}{% endif %}
