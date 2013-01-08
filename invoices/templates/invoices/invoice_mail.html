@@ -8,9 +8,7 @@
 {% trans 'constant symbol' %}:{{ invoice.issueDate|date:"mY" }}
 {% trans 'amount' %}:{{ invoice.totalPrice }}
 
-{% blocktrans %}
-Yours sincerely,
+{% trans 'Yours sincerely' %},
 {{ invoice.contractor.get_full_name }}.
-{% endblocktrans %} 
 
 {% if extraContent %}{{ extraContent }}{% endif %}

@@ -167,10 +167,11 @@ class RecurringInvoice(models.Model):
         verbose_name_plural = _('recurring invoices')
         ordering = ['frequency']
 
+    _tht = 'template invoice that following recurring ones will be based on'
+
     template = models.ForeignKey(Invoice, unique=True,
                                  verbose_name=_('template'),
-                                 help_text=_('template invoice \
-that following recurring templates will be based on')
+                                 help_text=_(_tht)
     )
     frequency = models.IntegerField(verbose_name=_('frequency'), choices=(
         (0, _('daily')),
