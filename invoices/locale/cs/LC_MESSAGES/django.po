@@ -99,7 +99,7 @@ msgstr "Převod"
 
 #: models.py:73
 msgid "issueDate"
-msgstr "datum plnění"
+msgstr "datum vystavení"
 
 #: models.py:75 pdfgen.py:101
 msgid "contractor"
