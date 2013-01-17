@@ -24,7 +24,7 @@ def on_account_change(sender, **kwargs):
     Mark appropriate invoice paid.
     """
     amount = kwargs['amount']
-    if kwargs['ss'] != INVOICE_PAY_SYMBOL and amount <= 0:
+    if kwargs['ss'] != INVOICE_PAY_SYMBOL or amount <= 0:
         return
 
     from .models import Invoice, BadIncommingTransfer
