@@ -41,7 +41,14 @@ def sendInvoice(invoice, **kwargs):
 
 
 def downloadInvoices(invoices, request):
-    stream = StringIO.StringIO()
-    generator.generate(invoices[0], stream)
+    if len(invoices) == 1:
+        return HttpResponse(_pdfInvoice(invoices[0]),
+                            mimetype='application/pdf')
+    else:
+        return HttpResponse('select only one invoice')
 
-    return HttpResponse(stream.getvalue(), mimetype='application/pdf')
+
+def _pdfInvoice(invoice):
+    stream = StringIO.StringIO()
+    generator.generate(invoice, stream)
+    return stream.getvalue()
