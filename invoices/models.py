@@ -1,3 +1,4 @@
+import datetime
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
@@ -5,11 +6,12 @@ from django.conf import settings
 from django.db.models.signals import post_save
 from valueladder.models import Thing
 
-from .signals import invoice_saved
+from .signals import invoice_saved, on_account_change, account_change
 from .mailing import sendInvoice
-import datetime
 
 INVOICE_DUE_INTERVAL = getattr(settings, 'INVOICE_DUE_INTERVAL', 14)
+
+account_change.connect(on_account_change)
 
 
 class CompanyInfoObjectManager(models.Manager):
@@ -141,8 +143,8 @@ class BadIncommingTransfer(models.Model):
         ordering = ['invoice__issueDate']
 
     BITChoices = [
-        ('u', _('underPaid')),
-        ('o', _('overPaid')),
+        ('l', _('underPaid')),
+        ('m', _('overPaid')),
         ('u', _('unassigned'))
     ]
 
