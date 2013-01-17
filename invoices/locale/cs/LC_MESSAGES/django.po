@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-08 21:28+0100\n"
+"POT-Creation-Date: 2013-01-17 21:43+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,184 +29,183 @@ msgstr "stáhnout vybrané jako PDF"
 msgid "send invoices"
 msgstr "poslat vybrané příjemcům"
 
-#: mailing.py:31 mailing.py:38 models.py:60 models.py:88 pdfgen.py:73
+#: mailing.py:31 mailing.py:38 models.py:62 models.py:90 pdfgen.py:73
 msgid "invoice"
 msgstr "faktura"
 
-#: models.py:26
+#: models.py:28
 msgid "company info"
 msgstr "firma"
 
-#: models.py:27
+#: models.py:29
 msgid "company infos"
 msgstr "firmy"
 
-#: models.py:32
+#: models.py:34
 msgid "user"
 msgstr "uživatel"
 
-#: models.py:34
+#: models.py:36
 msgid "bankaccount"
 msgstr "bankovní účet"
 
-#: models.py:36
+#: models.py:38
 msgid "inum"
 msgstr "IČO"
 
-#: models.py:37
+#: models.py:39
 msgid "tinum"
 msgstr "DIČ"
 
-#: models.py:38
+#: models.py:40
 msgid "state"
 msgstr "Stát"
 
-#: models.py:40
+#: models.py:42
 msgid "town"
 msgstr "město"
 
-#: models.py:41
+#: models.py:43
 msgid "zipcode"
 msgstr "psč"
 
-#: models.py:43
+#: models.py:45
 msgid "address"
 msgstr "adresa"
 
-#: models.py:44
+#: models.py:46
 msgid "phone"
 msgstr "telefon"
 
-#: models.py:61
+#: models.py:63
 msgid "invoices"
 msgstr "faktury"
 
-#: models.py:65
+#: models.py:67
 msgid "inInvoice"
 msgstr "Příchozí faktura"
 
-#: models.py:66
+#: models.py:68
 msgid "outInvoice"
 msgstr "Odchozí faktura"
 
-#: models.py:69
+#: models.py:71
 msgid "cash"
 msgstr "Hotovost"
 
-#: models.py:70
+#: models.py:72
 msgid "transfer"
 msgstr "Převod"
 
-#: models.py:73
+#: models.py:75
 msgid "issueDate"
 msgstr "datum vystavení"
 
-#: models.py:75 pdfgen.py:101
+#: models.py:77 pdfgen.py:101
 msgid "contractor"
 msgstr "dodavatel"
 
-#: models.py:77 pdfgen.py:121
+#: models.py:79 pdfgen.py:121
 msgid "subscriber"
 msgstr "odběratel"
 
-#: models.py:79
+#: models.py:81
 msgid "direction"
 msgstr "směr"
 
-#: models.py:81
+#: models.py:83
 msgid "paymentWay"
 msgstr "způsob platby"
 
-#: models.py:83
+#: models.py:85
 msgid "paid"
 msgstr "zaplacena"
 
-#: models.py:85
+#: models.py:87
 msgid "currency"
 msgstr "měna"
 
-#: models.py:125 pdfgen.py:137
+#: models.py:127 pdfgen.py:137
 msgid "name"
 msgstr "název položky"
 
-#: models.py:126 pdfgen.py:137
+#: models.py:128 pdfgen.py:137
 msgid "count"
 msgstr "počet"
 
-#: models.py:127 pdfgen.py:137
+#: models.py:129 pdfgen.py:137
 msgid "price"
 msgstr "jednotk.cena"
 
-#: models.py:139
+#: models.py:141
 msgid "bad incomming transfer"
 msgstr "špatná příchozí platba"
 
-#: models.py:140
+#: models.py:142
 msgid "bad incomming transfers"
 msgstr "špatné příchozí platby"
 
-#: models.py:144
+#: models.py:146
 msgid "underPaid"
 msgstr "nedoplaceno"
 
-#: models.py:145
+#: models.py:147
 msgid "overPaid"
 msgstr "přeplaceno"
 
-#: models.py:146
+#: models.py:148
 msgid "unassigned"
 msgstr "nespárováno"
 
-#: models.py:151
+#: models.py:153
 msgid "transaction info"
 msgstr "informace o transakci"
 
-#: models.py:152
+#: models.py:154
 msgid "reason"
 msgstr "důvod"
 
-#: models.py:166
-#, fuzzy
+#: models.py:168
 msgid "recurring invoice"
-msgstr "poslat vybrané příjemcům"
+msgstr "cyklická faktura"
 
-#: models.py:167
+#: models.py:169
 msgid "recurring invoices"
 msgstr "cyklické faktury"
 
-#: models.py:173
+#: models.py:175
 msgid "template"
 msgstr "šablona"
 
-#: models.py:176
+#: models.py:178
 msgid "frequency"
 msgstr "frekvence"
 
-#: models.py:177
+#: models.py:179
 msgid "daily"
 msgstr "denně"
 
-#: models.py:178
+#: models.py:180
 msgid "weekly"
 msgstr "tádně"
 
-#: models.py:179
+#: models.py:181
 msgid "monthly"
 msgstr "měsíčně"
 
-#: models.py:180
+#: models.py:182
 msgid "quaterly"
 msgstr "čtvrletně"
 
-#: models.py:181
+#: models.py:183
 msgid "yearly"
 msgstr "ročně"
 
-#: models.py:183
+#: models.py:185
 msgid "auto send"
 msgstr "automaticky poslat"
 
-#: models.py:184
+#: models.py:186
 msgid "if it shall be automatically send to subscriber"
 msgstr "ma být automaticky poslána oběrateli?"
 
@@ -217,6 +216,15 @@ msgstr "vygeneroval"
 #: pdfgen.py:174
 msgid "Not tax payer"
 msgstr "Neplátce DPH"
+
+#: signals.py:60
+#, python-format
+msgid "Your invoice %(iid)i has been paid"
+msgstr "Vaše faktura %(iid)i byla zaplacena"
+
+#: signals.py:63
+msgid "invoice paid"
+msgstr "faktura zaplacena"
 
 #: templates/invoices/invoice_mail.html:4
 msgid "Hi, we are sending you an invoice with following contents"
