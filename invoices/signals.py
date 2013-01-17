@@ -5,6 +5,8 @@ Created on May 30, 2012
 '''
 
 from django.dispatch.dispatcher import Signal
+from django.utils.translation import ugettext
+
 
 account_change = Signal(providing_args=[
     'transType', 'vs', 'ss', 'amount', 'destAcc', 'crcAcc', 'currency'
@@ -41,6 +43,7 @@ def on_account_change(sender, **kwargs):
     else:
         invoice.paid = True
         invoice.save()
+        _sendPaidNotification(invoice)
 
 
 def invoice_saved(instance, sender, **kwargs):
@@ -49,3 +52,12 @@ def invoice_saved(instance, sender, **kwargs):
     is incoming. Or notify partner if the invoice is outgoing.
     """
     pass
+
+
+def _sendPaidNotification(invoice):
+    from django.conf import settings
+    if getattr(settings, 'INVOICE_PAID_NOTIFICATION', True):
+        mailContent = ugettext('Your invoice %(iid)i has been paid' % \
+                               {'iid': invoice.id})
+        invoice.contractor.user.\
+            email_user(ugettext('invoice paid'), mailContent)
