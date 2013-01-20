@@ -18,13 +18,14 @@ class Command(BaseCommand):
 
     def handle(self, recipient, mailfrom, *args, **options):
         logging.basicConfig()
+        activate(settings.LANGUAGE_CODE)
 
         data = ' '.join([self.unicodefix(a) for a in args])
 
         try:
             self.processMail(recipient, mailfrom, data)
         except Exception, e:
-            logging.exception(e)
+            self._onBadVS(data, e)
 
     def unicodefix(self, val):
         try:
@@ -35,27 +36,23 @@ class Command(BaseCommand):
             return val
 
     def processMail(self, recipient, mailfrom, data):
-        activate(settings.LANGUAGE_CODE)
-
         logging.info('Loading %s' % settings.CREDIT_NOTIFICATION_PARSER)
 
         pMod = __import__(settings.CREDIT_NOTIFICATION_PARSER,
                           globals={}, locals={}, fromlist=['Parser'])
-        try:
-            parser = pMod.Parser()
-            parsed = parser.parse(data)
 
-            logging.info('Parsed: %s' % str(parsed))
+        parser = pMod.Parser()
+        parsed = parser.parse(data)
 
-            transType, vs, ss, amount, destAcc, crcAcc, currencyCode = parsed
-            currency = Thing.objects.get(code=currencyCode)
+        logging.info('Parsed: %s' % str(parsed))
 
-            account_change.send(sender=CompanyInfo, transType=transType,
-                vs=vs, ss=ss, amount=amount, destAcc=destAcc, crcAcc=crcAcc,
-                currency=currency)
-        except Exception, e:
-            logging.exception(e)
-            self._onBadVS(data)
+        transType, vs, ss, amount, destAcc, crcAcc, currencyCode = parsed
+        currency = Thing.objects.get(code=currencyCode)
 
-    def _onBadVS(self, data):
-        mail_admins('Unassotiated payment', data, fail_silently=True)
+        account_change.send(sender=CompanyInfo, transType=transType,
+            vs=vs, ss=ss, amount=amount, destAcc=destAcc, crcAcc=crcAcc,
+            currency=currency)
+
+    def _onBadVS(self, data, excp):
+        mail_admins('Unassotiated payment', '%s\n%s' % (data, excp),
+                    fail_silently=True)
