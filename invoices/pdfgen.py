@@ -101,7 +101,8 @@ class InvoicePdfGenerator(object):
         content.append(Paragraph(ugettext('contractor').upper(),
                                  self.styles['Heading4']))
 
-        tabledata = self._draw_user_info(content, invoice.contractor)
+        tabledata = self._draw_user_info(content, invoice.contractor,
+                                         extra=self.extraContractorText)
 
         self._draw_labeled('paymentWay',
                            invoice.get_paymentWay_display(), tabledata)
@@ -127,10 +128,17 @@ class InvoicePdfGenerator(object):
             invoice.issueDate.strftime("%d. %m. %Y"), tabledata)
         self._draw_labeled('dueDate',
             invoice.dueDate.strftime("%d. %m. %Y"), tabledata)
-        self._draw_labeled('dataOfUZP',
-            invoice.issueDate.strftime("%d. %m. %Y"), tabledata)
+
+        self._drawDUZP(invoice, tabledata)
 
         content.append(self._createInfoTable(tabledata))
+
+    def _drawDUZP(self, invoice, tabledata):
+        if invoice.contractor.tinum:
+            self._draw_labeled('dataOfUZP',
+                invoice.issueDate.strftime("%d. %m. %Y"), tabledata)
+        else:
+            tabledata.append([])
 
     def _drawItems(self, invoice, content):
         data = []
@@ -156,15 +164,15 @@ class InvoicePdfGenerator(object):
     def _draw_labeled(self, label, data, content):
         content.append(['%s:' % ugettext(label), data])
 
-    def _draw_user_info(self, content, userinfo):
+    def _draw_user_info(self, content, userinfo, **kwargs):
         content.append(Paragraph(userinfo.user.get_full_name(),
                                  self.styles['Heading3']))
         content.append(Paragraph(userinfo.address, self.styles['Heading4']))
         content.append(Paragraph(userinfo.town, self.styles['Heading4']))
         content.append(Paragraph(userinfo.state, self.styles['Heading4']))
 
-        if self.extraContractorText:
-            content.append(Paragraph(self.extraContractorText,
+        if 'extra' in kwargs:
+            content.append(Paragraph(kwargs['extra'],
                                      self.styles['Normal']))
         else:
             content.append(Spacer(1, 12))

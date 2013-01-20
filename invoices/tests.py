@@ -10,7 +10,7 @@ class InvoiceTest(TestCase):
 
     def setUp(self):
         TestCase.setUp(self)
-        for i in range(settings.OUR_COMPANY_ID):
+        for i in range(settings.OUR_COMPANY_ID + 3):
             u = User(username='user%i' % i, last_name='Mr. %i' % i,
                      first_name='TJ', password='jfcisoa')
             u.save()
