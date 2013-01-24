@@ -6,6 +6,7 @@ Created on May 30, 2012
 
 from django.dispatch.dispatcher import Signal
 from django.utils.translation import ugettext
+from django.conf import settings
 
 
 account_change = Signal(providing_args=[
@@ -15,7 +16,7 @@ account_change = Signal(providing_args=[
 This signal is sent when a bank notification mail arrives.
 """
 
-INVOICE_PAY_SYMBOL = 117
+INVOICE_PAY_SYMBOL = getattr(settings, 'INVOICE_PAY_SYMBOL', 117)
 DELTA = 0.5
 
 
@@ -55,7 +56,6 @@ def invoice_saved(instance, sender, **kwargs):
 
 
 def _sendPaidNotification(invoice):
-    from django.conf import settings
     if getattr(settings, 'INVOICE_PAID_NOTIFICATION', True):
         mailContent = ugettext('Your invoice %(iid)i has been paid' % \
                                {'iid': invoice.id})
