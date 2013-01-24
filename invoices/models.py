@@ -61,7 +61,7 @@ class Invoice(models.Model):
     class Meta:
         verbose_name = _('invoice')
         verbose_name_plural = _('invoices')
-        ordering = ['issueDate']
+        ordering = ['-issueDate']
 
     dirChoices = [
         ('i', _('inInvoice')),
