@@ -177,7 +177,7 @@ class InvoicePdfGenerator(object):
         content.append(Paragraph(userinfo.town, self.styles['Heading4']))
         content.append(Paragraph(userinfo.state, self.styles['Heading4']))
 
-        if 'extra' in kwargs:
+        if 'extra' in kwargs and kwargs['extra']:
             content.append(Paragraph(kwargs['extra'],
                                      self.styles['Normal']))
         else:
