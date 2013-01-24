@@ -89,6 +89,15 @@ class Invoice(models.Model):
     def __unicode__(self):
         return '%s %i' % (_('invoice'), self.id)
 
+    def getNumber(self):
+        """
+        Returns number of invoice.
+        """
+        if hasattr(settings, 'INVOICE_NUMBER_FUNC'):
+            return settings.INVOICE_NUMBER_FUNC()
+        else:
+            return self.id
+
     @property
     def dueDate(self):
         return self.issueDate + datetime.timedelta(INVOICE_DUE_INTERVAL)

@@ -14,6 +14,7 @@ from reportlab.lib import colors
 from reportlab.platypus.flowables import HRFlowable
 from reportlab.platypus.tables import TableStyle
 from reportlab.pdfgen.canvas import Canvas
+from invoices.signals import INVOICE_PAY_SYMBOL
 
 
 class InvoicePdfGenerator(object):
@@ -43,7 +44,7 @@ class InvoicePdfGenerator(object):
 
         frameWidth = doc.width / 2
         headerHeight = 50
-        userInfoHeight = 223
+        userInfoHeight = 228
         itemsFrameHeight = doc.height - userInfoHeight - headerHeight
 
         header = Frame(leftMargin, doc.height, doc.width, headerHeight)
@@ -70,7 +71,7 @@ class InvoicePdfGenerator(object):
         return doc
 
     def generate(self, invoice, stream):
-        title = '%s %i' % (ugettext('invoice'), invoice.id)
+        title = '%s %s' % (ugettext('invoice'), invoice.getNumber())
         self.doc.title = title
         content = []
 
@@ -107,6 +108,8 @@ class InvoicePdfGenerator(object):
         self._draw_labeled('paymentWay',
                            invoice.get_paymentWay_display(), tabledata)
         self._draw_labeled('variable symbol', str(invoice.id), tabledata)
+        self._draw_labeled('specific symbol', str(INVOICE_PAY_SYMBOL),
+                           tabledata)
         self._draw_labeled('bankaccount',
                            invoice.contractor.bankaccount, tabledata)
 
@@ -130,6 +133,9 @@ class InvoicePdfGenerator(object):
             invoice.dueDate.strftime("%d. %m. %Y"), tabledata)
 
         self._drawDUZP(invoice, tabledata)
+
+        tabledata.append([])    # compensation to contractor info lines
+        tabledata.append([])
 
         content.append(self._createInfoTable(tabledata))
 
