@@ -17,6 +17,11 @@ def totalPrice(obj):
 totalPrice.short_description = _('TotalPrice')
 
 
+def userId(obj):
+    return obj.user_id
+userId.short_description = _('user ID')
+
+
 def downloadAsPDF(modeladmin, request, queryset):
     return downloadInvoices(queryset, request)
 downloadAsPDF.short_description = _('download as PDF')
@@ -30,8 +35,10 @@ sendInvoices.short_description = _('send invoices')
 
 class InvoiceAdmin(admin.ModelAdmin):
     inlines = [ItemsInline]
-    list_display = ['issueDate', 'contractor', 'subscriber', 'direction',
-                    totalPrice, 'paid']
+    list_display = (
+        'issueDate', 'contractor', 'subscriber',
+        'direction', totalPrice, 'paid'
+    )
     list_filter = ['paid', 'direction']
     date_hierarchy = 'issueDate'
     actions = [downloadAsPDF, sendInvoices]
@@ -49,9 +56,12 @@ class BadIncommingTransferAdmin(admin.ModelAdmin):
 
 
 class CompanyInfoAdmin(admin.ModelAdmin):
-    search_fields = ['town', 'user__first_name', 'zipcode', 'inum']
+    search_fields = ('town', 'user__first_name', 'zipcode', 'inum')
     list_filter = ['state']
-    list_display = ['user', 'state', 'address', 'town', 'zipcode', 'inum']
+    list_display = (
+        userId, 'user', 'state', 'address', 'town', 'zipcode', 'inum'
+    )
+    list_display_links = ('user', 'state', 'address')
 
 
 class RecurringInvoiceAdmin(admin.ModelAdmin):
