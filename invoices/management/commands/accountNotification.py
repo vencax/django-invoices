@@ -24,8 +24,9 @@ class Command(BaseCommand):
 
         try:
             self.processMail(recipient, mailfrom, data)
-        except Exception, e:
-            self._onBadVS(data, e)
+        except Exception:
+            import traceback
+            self._onBadVS(data, traceback.format_exc())
 
     def unicodefix(self, val):
         try:
