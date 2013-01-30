@@ -9,7 +9,7 @@ from django.utils.translation import activate
 from django.core.management.base import BaseCommand
 from django.core.mail import mail_admins
 from valueladder.models import Thing
-from invoices.models import CompanyInfo
+from invoices.models import CompanyInfo, BadIncommingTransfer
 from invoices.signals import account_change
 
 
@@ -46,14 +46,13 @@ class Command(BaseCommand):
         parsed = parser.parse(data)
 
         logging.info('Parsed: %s' % str(parsed))
-
-        transType, vs, ss, amount, destAcc, crcAcc, currencyCode = parsed
-        currency = Thing.objects.get(code=currencyCode)
-
-        account_change.send(sender=CompanyInfo, transType=transType,
-            vs=vs, ss=ss, amount=amount, destAcc=destAcc, crcAcc=crcAcc,
-            currency=currency)
+        results = account_change.send(sender=CompanyInfo, parsed=parsed)
+        for _, res in results:
+            if res:
+                return
+        # here we have no account_change handler called
+        BadIncommingTransfer(typee='u', transactionInfo=str(parsed)).save()
 
     def _onBadVS(self, data, excp):
-        mail_admins('Unassotiated payment', '%s\n%s' % (data, excp),
+        mail_admins('account notification error', '%s\n%s' % (data, excp),
                     fail_silently=True)

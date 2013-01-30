@@ -9,9 +9,7 @@ from django.utils.translation import ugettext
 from django.conf import settings
 
 
-account_change = Signal(providing_args=[
-    'transType', 'vs', 'ss', 'amount', 'destAcc', 'crcAcc', 'currency'
-])
+account_change = Signal(providing_args=['parsed'])
 """
 This signal is sent when a bank notification mail arrives.
 """
@@ -20,31 +18,32 @@ INVOICE_PAY_SYMBOL = getattr(settings, 'INVOICE_PAY_SYMBOL', 117)
 DELTA = 0.5
 
 
-def on_account_change(sender, **kwargs):
+def on_account_change(sender, parsed, **kwargs):
     """ account change signal handler.
     Mark appropriate invoice paid.
     """
-    amount = kwargs['amount']
-    if kwargs['ss'] != INVOICE_PAY_SYMBOL or amount <= 0:
+    amount = parsed['amount']
+    if parsed['constSymb'] != INVOICE_PAY_SYMBOL or amount <= 0:
         return
 
     from .models import Invoice, BadIncommingTransfer
     try:
-        invoice = Invoice.objects.get(id=kwargs['vs'])
+        invoice = Invoice.objects.get(id=parsed['varSymb'])
     except Invoice.DoesNotExist:
         BadIncommingTransfer(invoice=None,
-            typee='u', transactionInfo=str(kwargs))
+            typee='u', transactionInfo=str(parsed))
 
     if invoice.totalPrice() > amount + DELTA:
         BadIncommingTransfer(invoice=invoice, typee='l',
-            transactionInfo=str(kwargs)).save()
+            transactionInfo=str(parsed)).save()
     elif invoice.totalPrice() < amount - DELTA:
         BadIncommingTransfer(invoice=invoice, typee='m',
-            transactionInfo=str(kwargs)).save()
+            transactionInfo=str(parsed)).save()
     else:
         invoice.paid = True
         invoice.save()
         _sendPaidNotification(invoice)
+    return 'invoice payment processed'
 
 
 def invoice_saved(instance, sender, **kwargs):

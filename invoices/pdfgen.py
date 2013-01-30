@@ -108,7 +108,7 @@ class InvoicePdfGenerator(object):
         self._draw_labeled('paymentWay',
                            invoice.get_paymentWay_display(), tabledata)
         self._draw_labeled('variable symbol', str(invoice.id), tabledata)
-        self._draw_labeled('specific symbol', str(INVOICE_PAY_SYMBOL),
+        self._draw_labeled('constant symbol', str(INVOICE_PAY_SYMBOL),
                            tabledata)
         self._draw_labeled('bankaccount',
                            invoice.contractor.bankaccount, tabledata)

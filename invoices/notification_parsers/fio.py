@@ -11,6 +11,7 @@ class Parser(object):
     amountRe = re.compile(u'=C8=E1stka:[ ]*(?P<Amount>[0-9 ]+,[0-9]{1,2})')
     VSRe = re.compile(u'VS:[ ]*(?P<VS>\d+)')
     SSRe = re.compile(u'SS:[ =]*(?P<SS>\d+)')
+    KSRe = re.compile(u'KS:[ =]*(?P<KS>\d+)')
     partnerAccountRe = re.compile('Proti=FA=E8et:[ ]*\
 (?P<acc>[0-9]*-*[0-9]{1,10}/[0-9]{4})')
     accountRe = re.compile(u' na kont=EC:[ ]*(?P<acc>\d+)')
@@ -29,7 +30,17 @@ class Parser(object):
         partnerAcc = self.partnerAccountRe.search(message).group('acc')
         accNum = '%s/2010' % self.accountRe.search(message).group('acc')
         ss = int(self.SSRe.search(message).group('SS'))
-        return (transactionType, vs, ss, amount, accNum, partnerAcc, 'CZK')
+        ks = int(self.KSRe.search(message).group('KS'))
+        return {
+            'direction': transactionType,
+            'varSymb': vs,
+            'specSymb': ss,
+            'constSymb': ks,
+            'amount': amount,
+            'sourceAcc': accNum,
+            'destAcc': partnerAcc,
+            'currency': 'CZK'
+        }
 
 if __name__ == "__main__":
     parser = Parser()
