@@ -1,9 +1,12 @@
 import os
 from django.test import TestCase
 from django.core.management import call_command
-from invoices.models import Invoice, CompanyInfo, Item, BadIncommingTransfer
+from django.utils.translation import ugettext as _
+from invoices.models import Invoice, CompanyInfo, Item, BadIncommingTransfer,\
+    RecurringInvoice
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core import mail
 
 
 class InvoiceTest(TestCase):
@@ -15,11 +18,7 @@ class InvoiceTest(TestCase):
                      first_name='TJ', password='jfcisoa')
             u.save()
             CompanyInfo(town='town%i' % i, phone=(1000 + i), user=u).save()
-
-        s = CompanyInfo.objects.all().order_by('?')[0]
-        invoice = Invoice(subscriber=s)
-        invoice.save()
-        invoice.items.add(Item(name='socks', count=2, price=13))
+        self._insertInvoice('socks')
 
     def testAccountNotification(self):
         """
@@ -75,6 +74,26 @@ class InvoiceTest(TestCase):
             errmess = 'BadIncommingTransfer (bad const symbol) not exists'
             raise AssertionError(errmess)
 
+    def test_recurring_invoices(self):
+        freq = 2    # monthly
+        goods = 'car'
+        i = self._insertInvoice(goods)
+        reccuring = RecurringInvoice(template=i, frequency=freq,
+                                     autosend=False)
+        reccuring.save()
+        call_command('processRecurring', freq)
+
+        found = Invoice.objects.filter(items__name=goods)
+        assert len(found) == 2, 'new invoice was not generated'
+
+        reccuring.autosend = True
+        reccuring.save()
+        call_command('processRecurring', freq)
+        found = Invoice.objects.filter(items__name=goods)
+        assert len(found) == 3, 'new invoice was not generated'
+        self._verifyOutMessage(to=[i.subscriber.user.email],
+                               subject=_('invoice'))
+
     def test_pdf_generate(self):
         """
         Tests invoice PDF generation.
@@ -87,3 +106,22 @@ class InvoiceTest(TestCase):
             f.write(_pdfInvoice(i))
 
         assert os.stat(outFile).st_size > 0
+
+    def _insertInvoice(self, what):
+        s = CompanyInfo.objects.all().order_by('?')[0]
+        invoice = Invoice(subscriber=s)
+        invoice.save()
+        invoice.items.add(Item(name=what, count=2, price=13))
+        return invoice
+
+    def _verifyOutMessage(self, **kwargs):
+        for m in mail.outbox:
+            found = True
+            for k, v in kwargs.items():
+                if getattr(m, k) != v:
+                    found = False
+                    break
+
+            if found:
+                return
+        raise AssertionError('Email with %s was not sent' % str(kwargs))
