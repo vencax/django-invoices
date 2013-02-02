@@ -17,7 +17,11 @@ class Command(BaseCommand):
     help = 'parses incoming account notification mail'  # @ReservedAssignment
 
     def handle(self, recipient, mailfrom, *args, **options):
-        logging.basicConfig()
+        if options.get('v', 1) == 3:
+            logging.basicConfig(filename=None, level=logging.DEBUG)
+        else:
+            logging.basicConfig(filename=None, level=logging.WARN)
+
         activate(settings.LANGUAGE_CODE)
 
         data = ' '.join([self.unicodefix(a) for a in args])
@@ -47,6 +51,7 @@ class Command(BaseCommand):
 
         logging.info('Parsed: %s' % str(parsed))
         results = account_change.send(sender=CompanyInfo, parsed=parsed)
+        logging.debug('Parsed: %s' % str(results))
         for _, res in results:
             if res:
                 return
