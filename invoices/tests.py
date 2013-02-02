@@ -25,15 +25,20 @@ class InvoiceTest(TestCase):
         Test account notification command.
         """
         invoice = Invoice.objects.all().order_by('?')[0]
-        mail = 'P=F8=EDjem na kont=EC: 2400260986 =C8=E1stka: %i,00 VS: %i\
+
+        mail = 'Received: from pokus.cz (unknown [192.168.1.201]) \
+ by ubuntu (Postfix) with ESMTP id 38FB344053    \
+ for <credit@vpn.vxk.cz>; Sat,  2 Feb 2013 17:57:07 +0100 (CET)   \
+ P=F8=EDjem na kont=EC: 2400260986 =C8=E1stka: %i,00 VS: %i\
  Zpr=E1va p=F8=EDjemci: =20 Aktu=E1ln=ED z=F9statek: 20 144,82\
- Proti=FA=E8et: 321-2500109888/2010 SS:=12345 KS: %i'
+ Proti=FA=E8et: 321-2500109888/2010 SS:=12345 KS: 0%i'
+
         baseArgs = ('credit@vpn.vxk.cz', 'automat@fio.cz')
 
         args = baseArgs + (
             mail % (invoice.totalPrice() - 4, invoice.id, 117),
         )
-        call_command('accountNotification', *args)
+        call_command('accountNotification', *args, v=3)
 
         i = Invoice.objects.get(id=invoice.id)
         assert i.paid == False
