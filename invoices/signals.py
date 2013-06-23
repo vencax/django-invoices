@@ -58,5 +58,7 @@ def _sendPaidNotification(invoice):
     if getattr(settings, 'INVOICE_PAID_NOTIFICATION', True):
         mailContent = ugettext('Your invoice %(iid)i has been paid' % \
                                {'iid': invoice.id})
+        mailContent += '\n%s\n%f\n' % (invoice.subscriber,
+                                       invoice.totalPrice())
         invoice.contractor.user.\
             email_user(ugettext('invoice paid'), mailContent)
