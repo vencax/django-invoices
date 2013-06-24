@@ -34,13 +34,26 @@ class InvoiceTest(TestCase):
  Proti=FA=E8et: 321-2500109888/2010 SS:=12345 KS: 0%i'
 
         baseArgs = ('credit@vpn.vxk.cz', 'automat@fio.cz')
+        i = Invoice.objects.get(id=invoice.id)
+
+        # test wrong direction
+        outmail = mail.replace('P=F8=EDjem na kont=EC', 'vydaj')
+        args = baseArgs + (
+            outmail % (invoice.totalPrice(), invoice.id, 117),
+        )
+        call_command('accountNotification', *args, v=117)
+        assert i.paid == False
+        try:
+            BadIncommingTransfer.objects.get(typee='l', invoice=i)
+            raise AssertionError('BadIncommingTransfer generated on OUT dir')
+        except BadIncommingTransfer.DoesNotExist:
+            pass
 
         args = baseArgs + (
             mail % (invoice.totalPrice() - 4, invoice.id, 117),
         )
         call_command('accountNotification', *args, v=3)
 
-        i = Invoice.objects.get(id=invoice.id)
         assert i.paid == False
         try:
             BadIncommingTransfer.objects.get(typee='l', invoice=i)

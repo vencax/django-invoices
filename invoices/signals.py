@@ -22,8 +22,8 @@ def on_account_change(sender, parsed, **kwargs):
     """ account change signal handler.
     Mark appropriate invoice paid.
     """
-    amount = parsed['amount']
-    if parsed['constSymb'] != INVOICE_PAY_SYMBOL or amount <= 0:
+    if parsed['direction'] == 'OUT' or parsed['amount'] <= 0 or \
+        parsed.get('constSymb', INVOICE_PAY_SYMBOL) != INVOICE_PAY_SYMBOL:
         return
 
     from .models import Invoice, BadIncommingTransfer
@@ -33,10 +33,10 @@ def on_account_change(sender, parsed, **kwargs):
         BadIncommingTransfer(invoice=None,
             typee='u', transactionInfo=str(parsed))
 
-    if invoice.totalPrice() > amount + DELTA:
+    if invoice.totalPrice() > parsed['amount'] + DELTA:
         BadIncommingTransfer(invoice=invoice, typee='l',
             transactionInfo=str(parsed)).save()
-    elif invoice.totalPrice() < amount - DELTA:
+    elif invoice.totalPrice() < parsed['amount'] - DELTA:
         BadIncommingTransfer(invoice=invoice, typee='m',
             transactionInfo=str(parsed)).save()
     else:
