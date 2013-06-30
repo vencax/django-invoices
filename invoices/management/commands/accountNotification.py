@@ -8,7 +8,6 @@ from django.conf import settings
 from django.utils.translation import activate
 from django.core.management.base import BaseCommand
 from django.core.mail import mail_admins
-from valueladder.models import Thing
 from invoices.models import CompanyInfo, BadIncommingTransfer
 from invoices.signals import account_change
 
