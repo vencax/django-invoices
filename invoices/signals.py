@@ -22,8 +22,7 @@ def on_account_change(sender, parsed, **kwargs):
     """ account change signal handler.
     Mark appropriate invoice paid.
     """
-    if parsed['direction'] == 'OUT' or parsed['amount'] <= 0 or \
-        parsed.get('constSymb', INVOICE_PAY_SYMBOL) != INVOICE_PAY_SYMBOL:
+    if not _is_invoice_payment(parsed):
         return
 
     from .models import Invoice, BadIncommingTransfer
@@ -62,3 +61,9 @@ def _sendPaidNotification(invoice):
                                        invoice.totalPrice())
         invoice.contractor.user.\
             email_user(ugettext('invoice paid'), mailContent)
+
+
+def _is_invoice_payment(parsed):
+    return parsed['direction'] != 'OUT' and parsed['amount'] > 0 and \
+        (parsed['constSymb'] == INVOICE_PAY_SYMBOL or \
+         parsed['specSymb'] == INVOICE_PAY_SYMBOL)
