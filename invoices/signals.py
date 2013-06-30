@@ -38,6 +38,9 @@ def on_account_change(sender, parsed, **kwargs):
     elif invoice.totalPrice() < parsed['amount'] - DELTA:
         BadIncommingTransfer(invoice=invoice, typee='m',
             transactionInfo=str(parsed)).save()
+    elif invoice.paid:
+        BadIncommingTransfer(invoice=invoice, typee='u',
+            transactionInfo=str(parsed)).save()
     else:
         invoice.paid = True
         invoice.save()
