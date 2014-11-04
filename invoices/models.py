@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from django.db.models.signals import post_save
-from valueladder.models import Thing
 
 from .signals import invoice_saved, on_account_change, account_change
 from .mailing import sendInvoice
@@ -84,7 +83,7 @@ class Invoice(models.Model):
                                      choices=paymentWayChoices, default=2)
     paid = models.BooleanField(verbose_name=_('paid'),
                                editable=False, default=False)
-    currency = models.ForeignKey(Thing, verbose_name=_('currency'))
+    currency = models.IntegerField(verbose_name=_('currency'))
 
     def __unicode__(self):
         return '%s %i' % (_('invoice'), self.id)
@@ -122,7 +121,7 @@ class Invoice(models.Model):
         if self.contractor_id == None:
             self.contractor = CompanyInfo.objects.get_our_company_info()
         if self.currency_id == None:
-            self.currency = Thing.objects.get_default()
+            self.currency = 0
         super(Invoice, self).save(*args, **kwargs)
 
 
