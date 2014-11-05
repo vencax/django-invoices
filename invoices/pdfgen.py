@@ -190,7 +190,7 @@ class InvoicePdfGenerator(object):
         return tabledata
 
     def _printMoney(self, value, invoice):
-        return ('%.2f %s' % (value, invoice.currency.code)).replace('.', ',')
+        return ('%.0f %s' % (value, invoice.get_currency_display())).replace('.', ',')
 
     def _preapareStyles(self, fontName, highlightColor):
         self.styles = styles.StyleSheet1()

@@ -17,7 +17,10 @@ class CompanyInfoObjectManager(models.Manager):
     """ Object manager that offers get_default thing method """
     def get_our_company_info(self):
         return self.get(user__id=settings.OUR_COMPANY_ID)
-
+    
+CURRENCY_CODES_CHOICES = (
+    (1, 'CZK'),
+)
 
 class CompanyInfo(models.Model):
     """
@@ -83,7 +86,8 @@ class Invoice(models.Model):
                                      choices=paymentWayChoices, default=2)
     paid = models.BooleanField(verbose_name=_('paid'),
                                editable=False, default=False)
-    currency = models.IntegerField(verbose_name=_('currency'))
+    currency = models.IntegerField(verbose_name=_('currency'),
+                                   choices=CURRENCY_CODES_CHOICES)
 
     def __unicode__(self):
         return '%s %i' % (_('invoice'), self.id)
