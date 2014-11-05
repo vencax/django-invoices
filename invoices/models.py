@@ -124,7 +124,7 @@ class Invoice(models.Model):
     def save(self, *args, **kwargs):
         if self.contractor_id == None:
             self.contractor = CompanyInfo.objects.get_our_company_info()
-        if self.currency_id == None:
+        if self.currency == None:
             self.currency = 0
         super(Invoice, self).save(*args, **kwargs)
 
